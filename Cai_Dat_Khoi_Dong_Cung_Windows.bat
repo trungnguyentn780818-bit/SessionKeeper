@@ -1,13 +1,16 @@
 @echo off
-chcp 65001 >nul
-title Cai Dat Khoi Dong SessionKeeper
-echo Đang thiết lập SessionKeeper tự khởi động cùng Windows...
+title Cai Dat Khoi Dong Cung Windows - SessionKeeper Pro
+color 0B
+echo ========================================================
+echo   THIET LAP SESSIONKEEPER TU DONG KHOI DONG CUNG MAY
+echo ========================================================
+echo.
 
 set "TARGET_DIR=%~dp0"
 set "EXE_PATH=%TARGET_DIR%SessionKeeper.exe"
 
 if not exist "%EXE_PATH%" (
-    echo [LỖI] Không tìm thấy file SessionKeeper.exe!
+    echo [LOI] Khong tim thay file SessionKeeper.exe trong thu muc nay!
     pause
     exit /b
 )
@@ -15,13 +18,10 @@ if not exist "%EXE_PATH%" (
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "SessionKeeperPro" /t REG_SZ /d "\"%EXE_PATH%\" --auto-restore" /f >nul
 
 if %errorlevel% equ 0 (
-    echo.
-    echo ========================================================
-    echo  [THÀNH CÔNG] Đã bật tự khởi động cùng Windows!
-    echo  Mỗi khi bật máy, phiên làm việc sẽ tự động mở lại.
-    echo ========================================================
+    echo [THANH CONG] Da bat tu khoi dong cung Windows!
+    echo Moi khi bat may tinh, cac file lam viec se tu dong duoc mo lai.
 ) else (
-    echo [LỖI] Không thể ghi registry. Vui lòng chạy lại với quyền Administrator.
+    echo [LOI] Khong the ghi Registry. Vui long chay lai bang cach chuot phai chon "Run as administrator".
 )
 
 echo.
