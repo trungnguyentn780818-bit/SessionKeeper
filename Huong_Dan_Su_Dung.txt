@@ -1,0 +1,34 @@
+========================================================================
+                     HƯỚNG DẪN SỬ DỤNG - SESSIONKEEPER PRO (v2.0)
+         Phần mềm tự động ghi nhớ & khôi phục phiên làm việc Windows
+========================================================================
+
+1. GIỚI THIỆU:
+   SessionKeeper Pro giúp bạn không cần phải mở lại từng bản vẽ AutoCAD, 
+   MicroStation, file Excel hay từng thư mục sau khi tắt máy tính.
+   Chỉ với 1 phím bấm, toàn bộ ứng dụng và tài liệu sẽ mở lại y nguyên!
+
+2. CÁCH SỬ DỤNG CƠ BẢN:
+   - Bước 1: Mở file "SessionKeeper.exe".
+   - Bước 2: Nhìn danh sách ứng dụng app vừa quét (CAD, Excel, Edge, Chrome, Zalo...).
+   - Bước 3: 
+     + Bấm [Lưu Phiên (Ctrl+Alt+S)]: Lưu trạng thái làm việc hiện tại.
+     + Bấm [Khôi Phục (Ctrl+Alt+R)]: Mở lại toàn bộ các file đã lưu.
+     + Bấm [Tắt Máy An Toàn] hoặc [Ngủ Đông]: Tự động lưu và tắt máy/ngủ đông.
+
+3. TÍNH NĂNG TỰ ĐỘNG THÔNG MINH:
+   - Tự động sao lưu ngầm (Auto-Snapshot): Cứ 10 phút app tự chụp 1 bản lưu, 
+     không lo mất dữ liệu nếu cúp điện.
+   - Hồ Sơ Dự Án: Có thể lưu riêng từng công trình (Dự án A, Dự án B...) 
+     trong tab "Hồ Sơ Dự Án".
+   - Tự mở khi bật máy: Vào tab "Cài Đặt & Hẹn Giờ", gạt bật 
+     "Tự khôi phục khi mở máy". Khi bật máy tính, mọi việc tự động mở lại!
+
+4. TÍNH NĂNG TIẾT KIỆM PIN & TƯƠNG THÍCH MỌI MÁY:
+   - Phần mềm chạy độc lập (Portable), không cần cài đặt gì thêm.
+   - Chạy mượt mà trên cả Windows 10 và Windows 11 (64-bit).
+   - Khi chạy ngầm chiếm 0% CPU, hoàn toàn không làm nóng hay chậm máy.
+
+========================================================================
+Chúc bạn làm việc hiệu quả và tiết kiệm thời gian mỗi ngày!
+========================================================================
