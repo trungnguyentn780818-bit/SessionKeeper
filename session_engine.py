@@ -560,6 +560,75 @@ def get_autocad_launcher():
             return c
     return None
 
+def open_folder_in_tab(folder_path, first_folder=False):
+    """Opens a folder. If first_folder or no File Explorer window is open, opens Explorer normally.
+       If File Explorer is already open (Windows 11), opens as a new TAB in that same window."""
+    if not os.path.exists(folder_path):
+        return False
+
+    def find_explorer_hwnd():
+        hwnds = []
+        def enum_cb(h, _):
+            if win32gui.IsWindowVisible(h) and win32gui.GetClassName(h) == 'CabinetWClass':
+                hwnds.append(h)
+        try:
+            win32gui.EnumWindows(enum_cb, None)
+        except Exception:
+            pass
+        return hwnds[0] if hwnds else None
+
+    if first_folder:
+        os.startfile(folder_path)
+        time.sleep(0.5)
+        return True
+
+    hwnd = find_explorer_hwnd()
+    if not hwnd or not HAS_WIN32:
+        os.startfile(folder_path)
+        return True
+
+    try:
+        win32gui.ShowWindow(hwnd, win32con.SW_RESTORE)
+        win32gui.SetForegroundWindow(hwnd)
+        time.sleep(0.15)
+
+        def send_combo(*keys):
+            for k in keys:
+                win32api.keybd_event(k, 0, 0, 0)
+            time.sleep(0.04)
+            for k in reversed(keys):
+                win32api.keybd_event(k, 0, win32con.KEYEVENTF_KEYUP, 0)
+
+        # 1. Ctrl + T (Tạo Tab mới trong File Explorer Win 11)
+        send_combo(0x11, 0x54)
+        time.sleep(0.2)
+
+        # 2. Alt + D (Nhảy vào thanh địa chỉ Address Bar)
+        send_combo(0x12, 0x44)
+        time.sleep(0.08)
+
+        # 3. Dán đường dẫn thư mục qua clipboard
+        try:
+            import win32clipboard
+            win32clipboard.OpenClipboard()
+            win32clipboard.EmptyClipboard()
+            win32clipboard.SetClipboardText(folder_path, win32con.CF_UNICODETEXT)
+            win32clipboard.CloseClipboard()
+            time.sleep(0.04)
+            send_combo(0x11, 0x56) # Ctrl + V
+            time.sleep(0.04)
+        except Exception:
+            pass
+
+        # 4. Enter để mở thư mục
+        send_combo(0x0D)
+        time.sleep(0.15)
+        return True
+    except Exception as e:
+        print(f"Error opening folder tab: {e}")
+        os.startfile(folder_path)
+        return True
+
 def restore_session(profile_name="latest", delay=0.4, restore_layout=True, progress_callback=None):
     items = get_session(profile_name)
     launched = []
@@ -784,23 +853,25 @@ def restore_session(profile_name="latest", delay=0.4, restore_layout=True, progr
         if delay > 0:
             time.sleep(delay)
 
-    # 6. Khôi phục thư mục
-    for it in folder_items:
+    # 6. Khôi phục thư mục (Mở lồng thành các Tab trong cùng 1 cửa sổ File Explorer)
+    valid_folders = [it for it in folder_items if it.get("target") and os.path.exists(it["target"])]
+    for i, it in enumerate(valid_folders):
         current_idx += 1
         name = it.get("name", "Folder")
-        target = it.get("target")
+        target = it["target"]
         if progress_callback:
             progress_callback(name, current_idx, total_count)
-        if target and os.path.exists(target):
-            try:
-                os.startfile(target)
-                launched.append(name)
-            except Exception as e:
-                errors.append(f"{name}: {e}")
-        else:
-            errors.append(f"{name}: Thư mục không tồn tại")
+        try:
+            open_folder_in_tab(target, first_folder=(i == 0))
+            launched.append(name)
+        except Exception as e:
+            errors.append(f"{name}: {e}")
         if delay > 0:
             time.sleep(delay)
+
+    for it in folder_items:
+        if not it.get("target") or not os.path.exists(it.get("target")):
+            errors.append(f"{it.get('name')}: Thư mục không tồn tại")
 
     # 7. Khôi phục ứng dụng độc lập (tránh mở trùng 1 app nhiều lần)
     launched_app_exes = set()
