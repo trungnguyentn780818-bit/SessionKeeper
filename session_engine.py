@@ -543,98 +543,302 @@ def get_session(profile_name="latest"):
         return data.get("latest", [])
     return data.get("profiles", {}).get(profile_name, {}).get("items", [])
 
+def is_process_running(proc_name):
+    try:
+        r = subprocess.run(["tasklist", "/FI", f"IMAGENAME eq {proc_name}"], capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
+        return proc_name.lower() in r.stdout.lower()
+    except Exception:
+        return False
+
+def get_autocad_launcher():
+    candidates = [
+        r"C:\Program Files\Common Files\Autodesk Shared\AcShellEx\AcLauncher.exe",
+        r"C:\Program Files (x86)\Common Files\Autodesk Shared\AcShellEx\AcLauncher.exe"
+    ]
+    for c in candidates:
+        if os.path.exists(c):
+            return c
+    return None
+
 def restore_session(profile_name="latest", delay=0.4, restore_layout=True, progress_callback=None):
     items = get_session(profile_name)
     launched = []
     errors = []
 
-    for idx, item in enumerate(items):
-        if not item.get("enabled", True):
-            continue
+    # Lọc các mục được kích hoạt
+    enabled_items = [it for it in items if it.get("enabled", True)]
+    total_count = len(enabled_items)
+    current_idx = 0
 
-        itype = item.get("type")
-        name = item.get("name", "Unknown")
-        layout = item.get("layout")
+    # Phân loại để mở lồng tab trong cùng 1 cửa sổ duy nhất:
+    cad_items = []
+    excel_items = []
+    word_items = []
+    browser_items = []
+    app_items = []
+    folder_items = []
+    other_items = []
 
+    for it in enabled_items:
+        itype = it.get("type")
+        exe = (it.get("exe") or "").lower()
+        target = (it.get("target") or "").lower()
+        cat = (it.get("category") or "").lower()
+
+        if itype == "browser":
+            browser_items.append(it)
+        elif itype == "folder":
+            folder_items.append(it)
+        elif itype == "app":
+            app_items.append(it)
+        elif itype == "file":
+            if "acad.exe" in exe or target.endswith((".dwg", ".dxf")) or "cad" in cat:
+                cad_items.append(it)
+            elif "excel.exe" in exe or target.endswith((".xlsx", ".xls", ".csv")):
+                excel_items.append(it)
+            elif "winword.exe" in exe or target.endswith((".docx", ".doc")):
+                word_items.append(it)
+            else:
+                other_items.append(it)
+        else:
+            other_items.append(it)
+
+    # 1. Khôi phục trình duyệt (mở lại toàn bộ các tab đã lưu trong 1 cửa sổ)
+    for it in browser_items:
+        current_idx += 1
+        name = it.get("name", "Browser")
         if progress_callback:
-            progress_callback(name, idx + 1, len(items))
+            progress_callback(name, current_idx, total_count)
+        exe = it.get("exe")
+        args = it.get("args", ["--restore-last-session"])
+        if exe and os.path.exists(exe):
+            try:
+                subprocess.Popen([exe] + args, creationflags=subprocess.CREATE_NO_WINDOW)
+                launched.append(name)
+            except Exception as e:
+                errors.append(f"{name}: {e}")
+        else:
+            errors.append(f"{name}: Không tìm thấy trình duyệt")
+        if delay > 0:
+            time.sleep(delay)
 
-        try:
-            proc = None
-            if itype == "browser":
-                exe = item.get("exe")
-                args = item.get("args", ["--restore-last-session"])
-                if exe and os.path.exists(exe):
-                    proc = subprocess.Popen([exe] + args, creationflags=subprocess.CREATE_NO_WINDOW)
-                    launched.append(name)
-                else:
-                    errors.append(f"{name}: Không tìm thấy")
+    # 2. Khôi phục bản vẽ CAD (Lồng toàn bộ bản vẽ thành các Tab trong cùng 1 cửa sổ CAD)
+    if cad_items:
+        ac_launcher = get_autocad_launcher()
+        valid_cad = [it for it in cad_items if it.get("target") and os.path.exists(it["target"])]
 
-            elif itype == "file":
-                target = item.get("target")
-                exe = item.get("exe")
-                if target and os.path.exists(target):
-                    if exe and os.path.exists(exe):
-                        proc = subprocess.Popen([exe, target], creationflags=subprocess.CREATE_NO_WINDOW)
+        if valid_cad:
+            cad_targets = [it["target"] for it in valid_cad]
+            acad_running = is_process_running("acad.exe")
+
+            # Nếu AutoCAD chưa chạy, khởi chạy bản vẽ đầu tiên và đợi khởi tạo xong listener
+            if not acad_running:
+                first_it = valid_cad[0]
+                first_target = first_it["target"]
+                current_idx += 1
+                if progress_callback:
+                    progress_callback(f"Mở AutoCAD: {first_it.get('name')}", current_idx, total_count)
+                try:
+                    if ac_launcher:
+                        subprocess.Popen([ac_launcher, "/O", first_target], creationflags=subprocess.CREATE_NO_WINDOW)
+                    elif first_it.get("exe") and os.path.exists(first_it["exe"]):
+                        subprocess.Popen([first_it["exe"], first_target], creationflags=subprocess.CREATE_NO_WINDOW)
+                    else:
+                        os.startfile(first_target)
+                    launched.append(first_it.get("name"))
+                except Exception as e:
+                    errors.append(f"{first_it.get('name')}: {e}")
+
+                # Chờ AutoCAD hiển thị giao diện và đăng ký DDE/COM listener (tối đa 4s)
+                for _ in range(8):
+                    if is_process_running("acad.exe"):
+                        time.sleep(1.5)
+                        break
+                    time.sleep(0.5)
+
+                remaining = valid_cad[1:]
+            else:
+                remaining = valid_cad
+
+            # Mở tất cả các bản vẽ còn lại lồng vào cửa sổ AutoCAD đang mở thành từng Tab
+            for it in remaining:
+                current_idx += 1
+                name = it.get("name", "CAD Drawing")
+                target = it["target"]
+                if progress_callback:
+                    progress_callback(name, current_idx, total_count)
+                try:
+                    if ac_launcher:
+                        subprocess.Popen([ac_launcher, "/O", target], creationflags=subprocess.CREATE_NO_WINDOW)
                     else:
                         os.startfile(target)
                     launched.append(name)
-                else:
-                    # If target is just filename, try to launch with exe
-                    if exe and os.path.exists(exe) and target:
-                        proc = subprocess.Popen([exe, target], creationflags=subprocess.CREATE_NO_WINDOW)
-                        launched.append(name)
-                    else:
-                        errors.append(f"{name}: Không tồn tại")
+                except Exception as e:
+                    errors.append(f"{name}: {e}")
+                time.sleep(0.3)
 
-            elif itype == "folder":
-                target = item.get("target")
-                if target and os.path.exists(target):
-                    os.startfile(target)
-                    launched.append(name)
-                else:
-                    errors.append(f"{name}: Thư mục không tồn tại")
+        for it in cad_items:
+            if not it.get("target") or not os.path.exists(it.get("target")):
+                errors.append(f"{it.get('name')}: Tệp bản vẽ không tồn tại")
 
-            elif itype == "app":
-                exe = item.get("exe")
-                args = item.get("args", [])
+    # 3. Khôi phục bảng tính Excel (Mở toàn bộ sổ làm việc trong cùng 1 cửa sổ Excel)
+    if excel_items:
+        valid_excel = [it for it in excel_items if it.get("target") and os.path.exists(it["target"])]
+        if valid_excel:
+            excel_exe = None
+            for it in valid_excel:
+                if it.get("exe") and os.path.exists(it["exe"]):
+                    excel_exe = it["exe"]
+                    break
+
+            excel_targets = [it["target"] for it in valid_excel]
+            for it in valid_excel:
+                current_idx += 1
+                if progress_callback:
+                    progress_callback(it.get("name"), current_idx, total_count)
+                launched.append(it.get("name"))
+
+            try:
+                if excel_exe:
+                    # Truyền tất cả các file cùng lúc vào excel.exe để mở lồng trong 1 cửa sổ
+                    subprocess.Popen([excel_exe] + excel_targets, creationflags=subprocess.CREATE_NO_WINDOW)
+                else:
+                    for t in excel_targets:
+                        os.startfile(t)
+                        time.sleep(0.3)
+            except Exception as e:
+                errors.append(f"Excel: {e}")
+
+        for it in excel_items:
+            if not it.get("target") or not os.path.exists(it.get("target")):
+                errors.append(f"{it.get('name')}: Tệp Excel không tồn tại")
+
+    # 4. Khôi phục tài liệu Word (Mở trong 1 phiên Word)
+    if word_items:
+        valid_word = [it for it in word_items if it.get("target") and os.path.exists(it["target"])]
+        if valid_word:
+            word_exe = None
+            for it in valid_word:
+                if it.get("exe") and os.path.exists(it["exe"]):
+                    word_exe = it["exe"]
+                    break
+            word_targets = [it["target"] for it in valid_word]
+            for it in valid_word:
+                current_idx += 1
+                if progress_callback:
+                    progress_callback(it.get("name"), current_idx, total_count)
+                launched.append(it.get("name"))
+            try:
+                if word_exe:
+                    subprocess.Popen([word_exe] + word_targets, creationflags=subprocess.CREATE_NO_WINDOW)
+                else:
+                    for t in word_targets:
+                        os.startfile(t)
+                        time.sleep(0.3)
+            except Exception as e:
+                errors.append(f"Word: {e}")
+
+        for it in word_items:
+            if not it.get("target") or not os.path.exists(it.get("target")):
+                errors.append(f"{it.get('name')}: Tệp Word không tồn tại")
+
+    # 5. Khôi phục các tệp khác (MicroStation .dgn, PDF...)
+    for it in other_items:
+        current_idx += 1
+        name = it.get("name", "File")
+        target = it.get("target")
+        exe = it.get("exe")
+        layout = it.get("layout")
+        if progress_callback:
+            progress_callback(name, current_idx, total_count)
+        if target and os.path.exists(target):
+            try:
+                proc = None
                 if exe and os.path.exists(exe):
-                    if args:
-                        proc = subprocess.Popen([exe] + args, creationflags=subprocess.CREATE_NO_WINDOW)
-                    else:
-                        os.startfile(exe)
-                    launched.append(name)
+                    proc = subprocess.Popen([exe, target], creationflags=subprocess.CREATE_NO_WINDOW)
                 else:
-                    errors.append(f"{name}: Không tìm thấy")
+                    os.startfile(target)
+                launched.append(name)
 
-            # Restore layout
-            if restore_layout and layout and proc and HAS_WIN32:
-                def delayed_layout(p_id, l_out):
-                    time.sleep(2.0)
-                    def find_enum(h, _):
-                        if win32gui.IsWindowVisible(h):
-                            try:
-                                _, w_id = win32process.GetWindowThreadProcessId(h)
-                                if w_id == p_id:
-                                    apply_window_layout(h, l_out)
-                            except Exception:
-                                pass
-                    try:
-                        win32gui.EnumWindows(find_enum, None)
-                    except Exception:
-                        pass
-                threading.Thread(target=delayed_layout, args=(proc.pid, layout), daemon=True).start()
+                if restore_layout and layout and proc and HAS_WIN32:
+                    def delayed_layout(p_id, l_out):
+                        time.sleep(2.0)
+                        def find_enum(h, _):
+                            if win32gui.IsWindowVisible(h):
+                                try:
+                                    _, w_id = win32process.GetWindowThreadProcessId(h)
+                                    if w_id == p_id:
+                                        apply_window_layout(h, l_out)
+                                except Exception:
+                                    pass
+                        try:
+                            win32gui.EnumWindows(find_enum, None)
+                        except Exception:
+                            pass
+                    threading.Thread(target=delayed_layout, args=(proc.pid, layout), daemon=True).start()
 
-            if delay > 0:
-                time.sleep(delay)
+            except Exception as e:
+                errors.append(f"{name}: {e}")
+        else:
+            errors.append(f"{name}: Không tìm thấy tệp")
+        if delay > 0:
+            time.sleep(delay)
 
-        except Exception as e:
-            errors.append(f"{name}: {str(e)}")
+    # 6. Khôi phục thư mục
+    for it in folder_items:
+        current_idx += 1
+        name = it.get("name", "Folder")
+        target = it.get("target")
+        if progress_callback:
+            progress_callback(name, current_idx, total_count)
+        if target and os.path.exists(target):
+            try:
+                os.startfile(target)
+                launched.append(name)
+            except Exception as e:
+                errors.append(f"{name}: {e}")
+        else:
+            errors.append(f"{name}: Thư mục không tồn tại")
+        if delay > 0:
+            time.sleep(delay)
+
+    # 7. Khôi phục ứng dụng độc lập (tránh mở trùng 1 app nhiều lần)
+    launched_app_exes = set()
+    for it in app_items:
+        current_idx += 1
+        name = it.get("name", "App")
+        exe = it.get("exe")
+        args = it.get("args", [])
+        if progress_callback:
+            progress_callback(name, current_idx, total_count)
+        if exe and os.path.exists(exe):
+            if exe.lower() in launched_app_exes:
+                continue
+            launched_app_exes.add(exe.lower())
+            try:
+                if args:
+                    subprocess.Popen([exe] + args, creationflags=subprocess.CREATE_NO_WINDOW)
+                else:
+                    os.startfile(exe)
+                launched.append(name)
+            except Exception as e:
+                errors.append(f"{name}: {e}")
+        else:
+            errors.append(f"{name}: Không tìm thấy ứng dụng")
+        if delay > 0:
+            time.sleep(delay)
 
     return launched, errors
 
 def shutdown_system(delay=1, comment="SessionKeeper tat may", force=True):
     cmd = ["shutdown", "/s"]
+    if force:
+        cmd.append("/f")
+    cmd.extend(["/t", str(delay), "/c", comment])
+    subprocess.run(cmd, creationflags=subprocess.CREATE_NO_WINDOW)
+
+def restart_system(delay=1, comment="SessionKeeper khoi dong lai", force=True):
+    cmd = ["shutdown", "/r"]
     if force:
         cmd.append("/f")
     cmd.extend(["/t", str(delay), "/c", comment])

@@ -43,8 +43,8 @@ class SessionKeeperPro(ctk.CTk):
         super().__init__()
 
         self.title("SessionKeeper Pro")
-        self.geometry("880x710")
-        self.minsize(820, 620)
+        self.geometry("940x710")
+        self.minsize(860, 620)
         self.configure(fg_color="#0d1117")
 
         if ICON_ICO.exists():
@@ -112,8 +112,10 @@ class SessionKeeperPro(ctk.CTk):
                 item("Mở SessionKeeper", self.show_from_tray, default=True),
                 item("Khôi phục phiên (Ctrl+Alt+R)", lambda: self.quick_hotkey_restore()),
                 item("Lưu phiên (Ctrl+Alt+S)", lambda: self.quick_hotkey_save()),
-                item("Tắt máy", lambda: self.on_save_shutdown_clicked()),
+                pystray.Menu.SEPARATOR,
                 item("Ngủ đông (Ctrl+Alt+H)", lambda: engine.hibernate_system()),
+                item("Khởi động lại", lambda: self.on_restart_clicked()),
+                item("Tắt máy an toàn", lambda: self.on_save_shutdown_clicked()),
                 pystray.Menu.SEPARATOR,
                 item("Thoát", self.quit_app)
             )
@@ -241,7 +243,18 @@ class SessionKeeperPro(ctk.CTk):
         )
         self.btn_hibernate.pack(side="left", fill="x", expand=True, padx=4)
 
-        # 4. Tắt Máy (Dark Crimson)
+        # 4. Khởi Động Lại (Warm Amber)
+        self.btn_restart = ctk.CTkButton(
+            r_inner, text="Khởi Động Lại",
+            font=ctk.CTkFont(size=12, weight="bold"),
+            fg_color="#3d2200", hover_color="#6e3c00",
+            border_width=1, border_color="#d29922", text_color="#e3b341",
+            height=36, corner_radius=6,
+            command=self.on_restart_clicked
+        )
+        self.btn_restart.pack(side="left", fill="x", expand=True, padx=4)
+
+        # 5. Tắt Máy (Dark Crimson)
         self.btn_shutdown = ctk.CTkButton(
             r_inner, text="Tắt Máy An Toàn",
             font=ctk.CTkFont(size=12, weight="bold"),
@@ -640,6 +653,81 @@ class SessionKeeperPro(ctk.CTk):
         ctk.CTkButton(btn_box, text="Tắt ngay", width=100, fg_color="#b62324", hover_color="#d1242f", command=do_now).pack(side="left", padx=6)
         ctk.CTkButton(btn_box, text="Hủy", width=100, fg_color="#21262d", hover_color="#30363d", command=do_cancel).pack(side="left", padx=6)
 
+    def on_restart_clicked(self):
+        selected = self.get_selected_items()
+        if not selected:
+            selected = self.current_items
+
+        unsaved = [x for x in selected if x.get("unsaved")]
+        if unsaved:
+            fnames = "\n".join([f"• {x['name']}" for x in unsaved[:3]])
+            ans = messagebox.askyesno(
+                "Cảnh báo chưa lưu file",
+                f"Phát hiện tài liệu chưa lưu thay đổi:\n{fnames}\n\nBạn có muốn tiếp tục khởi động lại không?"
+            )
+            if not ans:
+                return
+
+        engine.save_session(selected, "latest")
+        now_str = datetime.now().strftime("%H:%M:%S")
+        self.cfg["last_saved_time"] = now_str
+        engine.save_config(self.cfg)
+
+        self.show_restart_countdown_dialog(len(selected))
+
+    def show_restart_countdown_dialog(self, item_count):
+        dialog = ctk.CTkToplevel(self)
+        dialog.title("Khởi động lại")
+        dialog.geometry("380x180")
+        dialog.configure(fg_color="#0d1117")
+        dialog.transient(self)
+        dialog.grab_set()
+
+        lbl = ctk.CTkLabel(
+            dialog, text=f"Đã lưu {item_count} mục. Khởi động lại sau:",
+            font=ctk.CTkFont(size=13), text_color="#c9d1d9"
+        )
+        lbl.pack(pady=(20, 4))
+
+        seconds = 10
+        lbl_sec = ctk.CTkLabel(
+            dialog, text=f"{seconds}s",
+            font=ctk.CTkFont(size=26, weight="bold"), text_color="#d29922"
+        )
+        lbl_sec.pack(pady=4)
+
+        cancelled = [False]
+
+        def loop_count():
+            nonlocal seconds
+            if cancelled[0]:
+                return
+            seconds -= 1
+            if seconds <= 0:
+                dialog.destroy()
+                engine.restart_system(delay=1)
+            else:
+                lbl_sec.configure(text=f"{seconds}s")
+                dialog.after(1000, loop_count)
+
+        dialog.after(1000, loop_count)
+
+        btn_box = ctk.CTkFrame(dialog, fg_color="transparent")
+        btn_box.pack(pady=10)
+
+        def do_now():
+            cancelled[0] = True
+            dialog.destroy()
+            engine.restart_system(delay=1)
+
+        def do_cancel():
+            cancelled[0] = True
+            dialog.destroy()
+            self.set_status("Đã hủy khởi động lại.")
+
+        ctk.CTkButton(btn_box, text="Khởi động ngay", width=115, fg_color="#9e6a03", hover_color="#b07d0f", text_color="#ffffff", command=do_now).pack(side="left", padx=6)
+        ctk.CTkButton(btn_box, text="Hủy", width=90, fg_color="#21262d", hover_color="#30363d", command=do_cancel).pack(side="left", padx=6)
+
     def on_hibernate_clicked(self):
         ans = messagebox.askyesno(
             "Ngủ Đông",
@@ -973,6 +1061,10 @@ if __name__ == "__main__":
         it = engine.scan_session()
         engine.save_session(it, "latest")
         engine.shutdown_system(delay=5)
+    elif "--save-restart" in sys.argv:
+        it = engine.scan_session()
+        engine.save_session(it, "latest")
+        engine.restart_system(delay=1)
     else:
         create_single_desktop_shortcut()
         app = SessionKeeperPro()
