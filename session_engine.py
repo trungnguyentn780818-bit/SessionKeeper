@@ -633,15 +633,28 @@ def restore_session(profile_name="latest", delay=0.4, restore_layout=True, progr
 
     return launched, errors
 
-def shutdown_system(delay=5, comment="SessionKeeper tat may"):
-    subprocess.run(["shutdown", "/s", "/t", str(delay), "/c", comment], creationflags=subprocess.CREATE_NO_WINDOW)
+def shutdown_system(delay=1, comment="SessionKeeper tat may", force=True):
+    cmd = ["shutdown", "/s"]
+    if force:
+        cmd.append("/f")
+    cmd.extend(["/t", str(delay), "/c", comment])
+    subprocess.run(cmd, creationflags=subprocess.CREATE_NO_WINDOW)
 
-def hibernate_system():
+def hibernate_system(auto_save=True):
+    if auto_save:
+        try:
+            items = scan_session()
+            if items:
+                save_session(items, "latest")
+        except Exception as e:
+            print(f"Error auto-saving before hibernate: {e}")
+    # Đảm bảo bật tính năng hibernate của Windows
     try:
-        import ctypes
-        ctypes.windll.PowrProf.SetSuspendState(1, 1, 0)
+        subprocess.run(["powercfg", "-h", "on"], creationflags=subprocess.CREATE_NO_WINDOW)
     except Exception:
-        subprocess.run(["shutdown", "/h"], creationflags=subprocess.CREATE_NO_WINDOW)
+        pass
+    # Gọi trực tiếp lệnh shutdown /h để ngắt nguồn 100% (tránh bị S0 Modern Standby chuyển thành Sleep)
+    subprocess.run(["shutdown", "/h"], creationflags=subprocess.CREATE_NO_WINDOW)
 
 def cancel_shutdown():
     subprocess.run(["shutdown", "/a"], creationflags=subprocess.CREATE_NO_WINDOW)
