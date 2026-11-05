@@ -1,0 +1,16 @@
+{
+  "version": "2.1.0",
+  "name": "SessionKeeper Pro v2.1.0",
+  "release_date": "2026-11-05",
+  "download_url": "https://github.com/trungnguyentn780818-bit/SessionKeeper/raw/main/SessionKeeper.exe",
+  "portable_zip_url": "https://github.com/trungnguyentn780818-bit/SessionKeeper/raw/main/SessionKeeper_v2.0_Portable.zip",
+  "github_url": "https://github.com/trungnguyentn780818-bit/SessionKeeper",
+  "changelog": [
+    "Thêm nút Khởi Động Lại (Restart) an toàn có đếm ngược 10s",
+    "Tự động gộp toàn bộ bản vẽ CAD thành các Tab trong 1 cửa sổ duy nhất",
+    "Gộp các bảng tính Excel và tài liệu Word vào chung 1 cửa sổ duy nhất",
+    "Gộp toàn bộ thư mục mở thành từng Tab trong 1 cửa sổ File Explorer duy nhất",
+    "Sửa triệt để chế độ Ngủ Đông (shutdown /h) ngắt điện hoàn toàn 100%",
+    "Tích hợp hệ thống Tự Động Cập Nhật (Auto-Updater) thông qua GitHub"
+  ]
+}
