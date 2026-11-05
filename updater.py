@@ -29,8 +29,9 @@ def check_for_updates(timeout=4):
     Returns: (has_update: bool, info: dict or None)
     """
     try:
+        cache_bust_url = f"{VERSION_URL}?t={int(time.time())}"
         req = urllib.request.Request(
-            VERSION_URL,
+            cache_bust_url,
             headers={"User-Agent": f"SessionKeeper-Updater/{CURRENT_VERSION}"}
         )
         with urllib.request.urlopen(req, timeout=timeout) as resp:

@@ -31,6 +31,7 @@ sys.path.append(str(BASE_DIR))
 
 import session_engine as engine
 import icon_provider
+import updater
 
 ctk.set_appearance_mode("Dark")
 ctk.set_default_color_theme("blue")
@@ -83,6 +84,9 @@ class SessionKeeperPro(ctk.CTk):
                 on_restore=self.quick_hotkey_restore,
                 on_hibernate=engine.hibernate_system
             )
+
+        self.update_info = None
+        threading.Thread(target=self.check_updates_background, daemon=True).start()
 
         self.protocol("WM_DELETE_WINDOW", self.on_close_window)
 
@@ -202,6 +206,14 @@ class SessionKeeperPro(ctk.CTk):
             text_color="#3fb950", padx=8
         )
         self.lbl_sync_status.pack(side="left", padx=(6, 0))
+
+        self.btn_update_badge = ctk.CTkButton(
+            right_b, text="🚀 Có bản mới",
+            font=ctk.CTkFont(size=11, weight="bold"),
+            fg_color="#1f6feb", hover_color="#388bfd",
+            height=26, corner_radius=13,
+            command=self.on_update_badge_clicked
+        )
 
         # 2. Command Ribbon (Clean, balanced 4-action bar)
         ribbon = ctk.CTkFrame(self, fg_color="#161b22", corner_radius=8, border_width=1, border_color="#30363d")
@@ -947,6 +959,34 @@ class SessionKeeperPro(ctk.CTk):
         if self.cfg.get("minimize_to_tray", True):
             self.sw_tray.select()
 
+        # 3. Update & Version Info
+        box_upd = ctk.CTkFrame(scroll, corner_radius=6, fg_color="#161b22", border_width=1, border_color="#21262d")
+        box_upd.pack(fill="x", pady=6)
+
+        lbl_u = ctk.CTkLabel(box_upd, text="CẬP NHẬT PHẦN MỀM & MÃ NGUỒN", font=ctk.CTkFont(size=11, weight="bold"), text_color="#8b949e")
+        lbl_u.pack(anchor="w", padx=14, pady=(10, 4))
+
+        lbl_u_info = ctk.CTkLabel(
+            box_upd, text=f"Phiên bản hiện tại: v{updater.CURRENT_VERSION} (Portable) • Tự động đồng bộ GitHub",
+            font=ctk.CTkFont(size=12), text_color="#c9d1d9"
+        )
+        lbl_u_info.pack(anchor="w", padx=14, pady=2)
+
+        row_u = ctk.CTkFrame(box_upd, fg_color="transparent")
+        row_u.pack(fill="x", padx=14, pady=(6, 12))
+
+        ctk.CTkButton(
+            row_u, text="🔄 Kiểm Tra Cập Nhật Ngay", height=30,
+            fg_color="#1f6feb", hover_color="#388bfd", font=ctk.CTkFont(size=12, weight="bold"),
+            command=self.manual_check_update
+        ).pack(side="left", padx=(0, 8))
+
+        ctk.CTkButton(
+            row_u, text="🌐 Xem Mã Nguồn Trên GitHub", height=30,
+            fg_color="#21262d", hover_color="#30363d", font=ctk.CTkFont(size=12),
+            command=updater.open_download_page
+        ).pack(side="left")
+
     def start_shutdown_timer(self, mins):
         self.timer_seconds_left = mins * 60
         self.timer_running = True
@@ -1021,6 +1061,135 @@ class SessionKeeperPro(ctk.CTk):
         val = self.sw_tray.get() == 1
         self.cfg["minimize_to_tray"] = val
         engine.save_config(self.cfg)
+
+    # ================= CẬP NHẬT TỰ ĐỘNG (AUTO-UPDATER) =================
+    def check_updates_background(self):
+        time.sleep(2.5)
+        has_update, info = updater.check_for_updates()
+        if has_update and info:
+            self.update_info = info
+            self.post_ui(lambda: self.show_update_badge(info))
+
+    def show_update_badge(self, info):
+        ver = info.get("version", "")
+        self.btn_update_badge.configure(text=f"🚀 Bản {ver} mới!")
+        self.btn_update_badge.pack(side="left", padx=(0, 6))
+
+    def on_update_badge_clicked(self):
+        if self.update_info:
+            self.show_update_dialog(self.update_info)
+        else:
+            self.manual_check_update()
+
+    def manual_check_update(self):
+        self.set_status("Đang kiểm tra cập nhật từ GitHub...", "#58a6ff")
+        def do_chk():
+            has_update, info = updater.check_for_updates(timeout=6)
+            if has_update and info:
+                self.update_info = info
+                self.post_ui(lambda: [
+                    self.show_update_badge(info),
+                    self.show_update_dialog(info),
+                    self.set_status(f"Đã phát hiện bản mới v{info.get('version')}!", "#3fb950")
+                ])
+            elif info:
+                self.post_ui(lambda: messagebox.showinfo("Cập nhật", f"Bạn đang dùng phiên bản mới nhất (v{updater.CURRENT_VERSION})!"))
+                self.post_ui(lambda: self.set_status("Đang ở phiên bản mới nhất.", "#3fb950"))
+            else:
+                self.post_ui(lambda: messagebox.showwarning("Cập nhật", "Không thể kết nối đến GitHub để kiểm tra cập nhật.\nVui lòng kiểm tra kết nối mạng."))
+                self.post_ui(lambda: self.set_status("Lỗi kiểm tra cập nhật.", "#f85149"))
+        threading.Thread(target=do_chk, daemon=True).start()
+
+    def show_update_dialog(self, info):
+        dialog = ctk.CTkToplevel(self)
+        dialog.title("Cập Nhật SessionKeeper")
+        dialog.geometry("480x420")
+        dialog.configure(fg_color="#0d1117")
+        dialog.transient(self)
+        dialog.grab_set()
+
+        lbl_title = ctk.CTkLabel(
+            dialog, text=f"🚀 Đã Có Bản Cập Nhật v{info.get('version', '')}!",
+            font=ctk.CTkFont(size=16, weight="bold"), text_color="#58a6ff"
+        )
+        lbl_title.pack(pady=(16, 4))
+
+        lbl_date = ctk.CTkLabel(
+            dialog, text=f"Ngày phát hành: {info.get('release_date', '')}  •  Phiên bản máy: v{updater.CURRENT_VERSION}",
+            font=ctk.CTkFont(size=11), text_color="#8b949e"
+        )
+        lbl_date.pack(pady=(0, 8))
+
+        lbl_log_title = ctk.CTkLabel(dialog, text="NHỮNG ĐIỂM MỚI VỪA CẬP NHẬT:", font=ctk.CTkFont(size=11, weight="bold"), text_color="#8b949e")
+        lbl_log_title.pack(anchor="w", padx=16, pady=(4, 2))
+
+        box_log = ctk.CTkScrollableFrame(dialog, height=150, fg_color="#161b22", corner_radius=6, border_width=1, border_color="#30363d")
+        box_log.pack(fill="x", padx=16, pady=4)
+
+        changelog = info.get("changelog", [])
+        if isinstance(changelog, list):
+            for c in changelog:
+                ctk.CTkLabel(box_log, text=f"• {c}", font=ctk.CTkFont(size=12), text_color="#c9d1d9", anchor="w", justify="left").pack(fill="x", pady=2)
+        else:
+            ctk.CTkLabel(box_log, text=str(changelog), font=ctk.CTkFont(size=12), text_color="#c9d1d9", anchor="w", justify="left").pack(fill="x", pady=2)
+
+        prog_bar = ctk.CTkProgressBar(dialog, height=8, corner_radius=4, fg_color="#21262d", progress_color="#1f6feb")
+        lbl_prog = ctk.CTkLabel(dialog, text="", font=ctk.CTkFont(size=11), text_color="#8b949e")
+
+        btn_box = ctk.CTkFrame(dialog, fg_color="transparent")
+        btn_box.pack(pady=12)
+
+        def do_download():
+            btn_auto.configure(state="disabled", text="Đang tải về...")
+            btn_gh.configure(state="disabled")
+            prog_bar.pack(fill="x", padx=20, pady=(6, 2))
+            prog_bar.set(0)
+            lbl_prog.pack(pady=(0, 6))
+
+            def worker():
+                def p_cb(pct, down, tot):
+                    self.post_ui(lambda: [
+                        prog_bar.set(pct / 100.0),
+                        lbl_prog.configure(text=f"Đang tải: {pct}% ({down // (1024*1024)}MB / {tot // (1024*1024)}MB)")
+                    ])
+
+                dl_url = info.get("download_url") or updater.GITHUB_REPO_URL
+                ok, msg = updater.download_and_apply_update(dl_url, progress_callback=p_cb)
+                if ok:
+                    self.post_ui(lambda: [
+                        lbl_prog.configure(text="Đã tải xong! Đang khởi động lại ứng dụng...", text_color="#3fb950"),
+                        dialog.after(1500, self.quit_app)
+                    ])
+                else:
+                    self.post_ui(lambda: [
+                        messagebox.showerror("Lỗi cập nhật", f"Không thể tự động cập nhật: {msg}\nVui lòng tải trực tiếp từ GitHub."),
+                        btn_auto.configure(state="normal", text="Thử lại"),
+                        btn_gh.configure(state="normal"),
+                        prog_bar.pack_forget(),
+                        lbl_prog.pack_forget()
+                    ])
+
+            threading.Thread(target=worker, daemon=True).start()
+
+        btn_auto = ctk.CTkButton(
+            btn_box, text="⚡ Nâng Cấp Tự Động", width=140, height=32,
+            fg_color="#1f6feb", hover_color="#388bfd", font=ctk.CTkFont(size=12, weight="bold"),
+            command=do_download
+        )
+        btn_auto.pack(side="left", padx=5)
+
+        btn_gh = ctk.CTkButton(
+            btn_box, text="🌐 Tải Từ GitHub", width=120, height=32,
+            fg_color="#21262d", hover_color="#30363d", font=ctk.CTkFont(size=12),
+            command=lambda: [updater.open_download_page(), dialog.destroy()]
+        )
+        btn_gh.pack(side="left", padx=5)
+
+        ctk.CTkButton(
+            btn_box, text="Để Sau", width=80, height=32,
+            fg_color="transparent", hover_color="#21262d", font=ctk.CTkFont(size=12), text_color="#8b949e",
+            command=dialog.destroy
+        ).pack(side="left", padx=5)
 
 def create_single_desktop_shortcut():
     import win32com.client
