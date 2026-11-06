@@ -560,74 +560,144 @@ def get_autocad_launcher():
             return c
     return None
 
-def open_folder_in_tab(folder_path, first_folder=False):
-    """Opens a folder. If first_folder or no File Explorer window is open, opens Explorer normally.
-       If File Explorer is already open (Windows 11), opens as a new TAB in that same window."""
-    if not os.path.exists(folder_path):
-        return False
+def restore_folders_in_tabs(folder_items, progress_callback=None, total_count=0, current_idx=0, launched=None, errors=None):
+    """
+    Khôi phục danh sách thư mục lồng thành các Tab trong cùng 1 cửa sổ File Explorer duy nhất.
+    Sử dụng thông điệp hệ thống WM_COMMAND 0xA21B (41499) và COM Navigate của Windows 11.
+    """
+    if launched is None:
+        launched = []
+    if errors is None:
+        errors = []
 
-    def find_explorer_hwnd():
-        hwnds = []
+    valid_folders = [it for it in folder_items if it.get("target") and os.path.exists(it["target"])]
+    if not valid_folders:
+        for it in folder_items:
+            errors.append(f"{it.get('name')}: Thư mục không tồn tại")
+        return current_idx
+
+    # Đảm bảo luồng ngầm liên kết với WinSta0 và Desktop Default
+    try:
+        h_winsta = win32service.OpenWindowStation('WinSta0', False, win32con.GENERIC_ALL)
+        h_winsta.SetProcessWindowStation()
+        h_desk = win32service.OpenDesktop('Default', 0, False, win32con.GENERIC_ALL)
+        h_desk.SetThreadDesktop()
+    except Exception:
+        pass
+
+    try:
+        pythoncom.CoInitialize()
+    except Exception:
+        pass
+
+    shell = None
+    try:
+        shell = win32com.client.Dispatch("Shell.Application")
+    except Exception:
+        pass
+
+    def get_cabinet_hwnd():
+        hwnd = None
         def enum_cb(h, _):
+            nonlocal hwnd
             if win32gui.IsWindowVisible(h) and win32gui.GetClassName(h) == 'CabinetWClass':
-                hwnds.append(h)
+                hwnd = h
         try:
             win32gui.EnumWindows(enum_cb, None)
         except Exception:
             pass
-        return hwnds[0] if hwnds else None
+        return hwnd
 
-    if first_folder:
-        os.startfile(folder_path)
-        time.sleep(0.5)
-        return True
+    hwnd_cabinet = get_cabinet_hwnd()
+    start_idx = 0
 
-    hwnd = find_explorer_hwnd()
-    if not hwnd or not HAS_WIN32:
-        os.startfile(folder_path)
-        return True
+    # Nếu chưa có cửa sổ File Explorer nào mở, khởi chạy thư mục đầu tiên để tạo cửa sổ
+    if not hwnd_cabinet:
+        first_it = valid_folders[0]
+        current_idx += 1
+        name = first_it.get("name", "Folder")
+        target = first_it["target"]
+        if progress_callback:
+            progress_callback(f"Mở Explorer: {name}", current_idx, total_count)
+        os.startfile(target)
+        launched.append(name)
+        start_idx = 1
 
-    try:
-        win32gui.ShowWindow(hwnd, win32con.SW_RESTORE)
-        win32gui.SetForegroundWindow(hwnd)
-        time.sleep(0.15)
+        # Chờ tối đa 3 giây cho cửa sổ File Explorer hiển thị và nạp xong giao diện
+        for _ in range(15):
+            time.sleep(0.2)
+            hwnd_cabinet = get_cabinet_hwnd()
+            if hwnd_cabinet:
+                time.sleep(0.5)
+                break
 
-        def send_combo(*keys):
-            for k in keys:
-                win32api.keybd_event(k, 0, 0, 0)
-            time.sleep(0.04)
-            for k in reversed(keys):
-                win32api.keybd_event(k, 0, win32con.KEYEVENTF_KEYUP, 0)
+    # Nếu không tìm thấy cửa sổ (ví dụ Win 10), mở bình thường các thư mục còn lại
+    if not hwnd_cabinet or not shell:
+        for it in valid_folders[start_idx:]:
+            current_idx += 1
+            name = it.get("name", "Folder")
+            if progress_callback:
+                progress_callback(name, current_idx, total_count)
+            try:
+                os.startfile(it["target"])
+                launched.append(name)
+            except Exception as e:
+                errors.append(f"{name}: {e}")
+            time.sleep(0.3)
+        return current_idx
 
-        # 1. Ctrl + T (Tạo Tab mới trong File Explorer Win 11)
-        send_combo(0x11, 0x54)
-        time.sleep(0.2)
+    # Mở tất cả các thư mục còn lại lồng thành các Tab trong cửa sổ File Explorer đó
+    for it in valid_folders[start_idx:]:
+        current_idx += 1
+        name = it.get("name", "Folder")
+        target = it["target"]
+        if progress_callback:
+            progress_callback(f"Tạo Tab: {name}", current_idx, total_count)
 
-        # 2. Alt + D (Nhảy vào thanh địa chỉ Address Bar)
-        send_combo(0x12, 0x44)
-        time.sleep(0.08)
-
-        # 3. Dán đường dẫn thư mục qua clipboard
+        tabs = []
+        def enum_tab(h, _):
+            if win32gui.GetClassName(h) == 'ShellTabWindowClass':
+                tabs.append(h)
         try:
-            import win32clipboard
-            win32clipboard.OpenClipboard()
-            win32clipboard.EmptyClipboard()
-            win32clipboard.SetClipboardText(folder_path, win32con.CF_UNICODETEXT)
-            win32clipboard.CloseClipboard()
-            time.sleep(0.04)
-            send_combo(0x11, 0x56) # Ctrl + V
-            time.sleep(0.04)
+            win32gui.EnumChildWindows(hwnd_cabinet, enum_tab, None)
         except Exception:
             pass
 
-        # 4. Enter để mở thư mục
-        send_combo(0x0D)
-        time.sleep(0.15)
-        return True
-    except Exception as e:
-        print(f"Error opening folder tab: {e}")
-        os.startfile(folder_path)
-        return True
+        if not tabs:
+            os.startfile(target)
+            launched.append(name)
+            time.sleep(0.3)
+            continue
+
+        try:
+            prev_count = shell.Windows().Count
+            # Gửi thông điệp hệ thống WM_COMMAND 0xA21B (41499) để tạo Tab mới trong Windows 11
+            win32gui.SendMessage(tabs[0], 0x0111, 0xA21B, 0)
+
+            # Chờ Tab mới xuất hiện trong Shell.Windows()
+            new_tab = None
+            for _ in range(12):
+                time.sleep(0.12)
+                if shell.Windows().Count > prev_count:
+                    new_tab = shell.Windows().Item(shell.Windows().Count - 1)
+                    break
+
+            if new_tab:
+                new_tab.Navigate(target)
+                launched.append(name)
+            else:
+                os.startfile(target)
+                launched.append(name)
+        except Exception as e:
+            errors.append(f"{name}: {e}")
+
+        time.sleep(0.2)
+
+    for it in folder_items:
+        if not it.get("target") or not os.path.exists(it.get("target")):
+            errors.append(f"{it.get('name')}: Thư mục không tồn tại")
+
+    return current_idx
 
 def restore_session(profile_name="latest", delay=0.4, restore_layout=True, progress_callback=None):
     items = get_session(profile_name)
@@ -853,25 +923,16 @@ def restore_session(profile_name="latest", delay=0.4, restore_layout=True, progr
         if delay > 0:
             time.sleep(delay)
 
-    # 6. Khôi phục thư mục (Mở lồng thành các Tab trong cùng 1 cửa sổ File Explorer)
-    valid_folders = [it for it in folder_items if it.get("target") and os.path.exists(it["target"])]
-    for i, it in enumerate(valid_folders):
-        current_idx += 1
-        name = it.get("name", "Folder")
-        target = it["target"]
-        if progress_callback:
-            progress_callback(name, current_idx, total_count)
-        try:
-            open_folder_in_tab(target, first_folder=(i == 0))
-            launched.append(name)
-        except Exception as e:
-            errors.append(f"{name}: {e}")
-        if delay > 0:
-            time.sleep(delay)
-
-    for it in folder_items:
-        if not it.get("target") or not os.path.exists(it.get("target")):
-            errors.append(f"{it.get('name')}: Thư mục không tồn tại")
+    # 6. Khôi phục thư mục (Lồng thành các Tab trong cùng 1 cửa sổ File Explorer duy nhất)
+    if folder_items:
+        current_idx = restore_folders_in_tabs(
+            folder_items,
+            progress_callback=progress_callback,
+            total_count=total_count,
+            current_idx=current_idx,
+            launched=launched,
+            errors=errors
+        )
 
     # 7. Khôi phục ứng dụng độc lập (tránh mở trùng 1 app nhiều lần)
     launched_app_exes = set()
