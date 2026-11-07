@@ -8,7 +8,7 @@ import urllib.request
 import webbrowser
 from pathlib import Path
 
-CURRENT_VERSION = "2.3.0"
+CURRENT_VERSION = "2.3.1"
 VERSION_URL = "https://raw.githubusercontent.com/trungnguyentn780818-bit/SessionKeeper/main/version.json"
 GITHUB_REPO_URL = "https://github.com/trungnguyentn780818-bit/SessionKeeper"
 

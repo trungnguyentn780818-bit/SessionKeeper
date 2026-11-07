@@ -1,16 +1,16 @@
 {
-  "version": "2.3.0",
-  "name": "SessionKeeper Pro v2.3.0",
+  "version": "2.3.1",
+  "name": "SessionKeeper Pro v2.3.1",
   "release_date": "2026-11-07",
   "download_url": "https://github.com/trungnguyentn780818-bit/SessionKeeper/raw/main/SessionKeeper.exe",
   "portable_zip_url": "https://github.com/trungnguyentn780818-bit/SessionKeeper/raw/main/SessionKeeper_v2.0_Portable.zip",
   "github_url": "https://github.com/trungnguyentn780818-bit/SessionKeeper",
   "changelog": [
+    "Sửa triệt để lỗi 'The operating system is not presently configured to run this application' khi mở Excel & Word",
+    "Chuyển toàn bộ cơ chế nạp file Excel & Word sang Windows Shell gốc (os.startfile), tránh xung đột ảo hóa App-V của Office",
     "Sửa triệt để lỗi mở nhiều cửa sổ AutoCAD: Toàn bộ bản vẽ DWG nạp lồng thành các Tab trong 1 cửa sổ CAD duy nhất",
-    "Tự động thiết lập AutoCAD TASKBAR = 0: Thanh tác vụ Windows gom gọn thành 1 thumbnail duy nhất, không bị xé lẻ nhiều card",
-    "Sửa triệt để lỗi File Explorer: Toàn bộ thư mục lồng thành các Tab trong 1 cửa sổ Explorer duy nhất (WM_COMMAND 0xA21B & COM Navigate)",
-    "Nâng cấp thuật toán khởi động nguội sau Restart/Bật nguồn: Tránh xung đột tiến trình nền",
-    "Tính năng Khởi Động Lại (Restart) lưu phiên an toàn đếm ngược 10s",
-    "Tự động cập nhật trực tiếp từ GitHub khi có bản mới"
+    "Tự động thiết lập AutoCAD TASKBAR = 0: Thanh tác vụ Windows gom gọn thành 1 thumbnail duy nhất",
+    "Sửa triệt để lỗi File Explorer: Toàn bộ thư mục lồng thành các Tab trong 1 cửa sổ Explorer duy nhất",
+    "Tính năng Khởi Động Lại (Restart) lưu phiên an toàn đếm ngược 10s"
   ]
 }

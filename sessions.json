@@ -1,19 +1,6 @@
 {
   "latest": [
     {
-      "id": "browser_edge",
-      "type": "browser",
-      "category": "Trình duyệt",
-      "name": "Microsoft Edge",
-      "detail": "Khôi phục toàn bộ Tabs",
-      "exe": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
-      "args": [
-        "--restore-last-session"
-      ],
-      "layout": null,
-      "enabled": true
-    },
-    {
       "id": "browser_chrome",
       "type": "browser",
       "category": "Trình duyệt",
@@ -34,78 +21,49 @@
       "detail": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\Zalo\\Zalo-26.11.10\\Zalo.exe",
       "exe": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\Zalo\\Zalo-26.11.10\\Zalo.exe",
       "args": [],
+      "layout": {
+        "rect": [
+          1472,
+          910,
+          745,
+          105
+        ],
+        "state": 1
+      },
+      "enabled": true
+    },
+    {
+      "id": "browser_edge",
+      "type": "browser",
+      "category": "Trình duyệt",
+      "name": "Microsoft Edge",
+      "detail": "Khôi phục toàn bộ Tabs",
+      "exe": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+      "args": [
+        "--restore-last-session"
+      ],
       "layout": null,
       "enabled": true
     },
     {
-      "id": "excel_file_d:\\!!!chuyen trach csdl kh 483\\longbinh\\phường long bình.xlsx",
+      "id": "excel_file_d:\\!!!chuyen trach csdl kh 483\\tangnhonphu\\tang nhon phu-thửa ảo (1).xlsx",
       "type": "file",
       "category": "Bảng tính",
-      "name": "Phường Long Bình.xlsx",
-      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\Phường Long Bình.xlsx",
+      "name": "TANG NHON PHU-THỬA ẢO (1).xlsx",
+      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\TANG NHON PHU-THỬA ẢO (1).xlsx",
       "exe": "C:\\Program Files\\Microsoft Office\\Root\\Office16\\EXCEL.EXE",
-      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\Phường Long Bình.xlsx",
+      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\TANG NHON PHU-THỬA ẢO (1).xlsx",
       "layout": null,
       "enabled": true
     },
     {
-      "id": "cad_ban do phan manh-phuong tang nhon phu.dwg",
-      "type": "file",
+      "id": "app_acad",
+      "type": "app",
       "category": "Bản vẽ CAD",
-      "name": "BAN DO PHAN MANH-PHUONG TANG NHON PHU.dwg",
-      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\BAN DO PHAN MANH-PHUONG TANG NHON PHU.dwg",
+      "name": "AutoCAD 2023",
+      "detail": "C:\\Program Files\\Autodesk\\AutoCAD 2023\\acad.exe",
       "exe": "C:\\Program Files\\Autodesk\\AutoCAD 2023\\acad.exe",
-      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\BAN DO PHAN MANH-PHUONG TANG NHON PHU.dwg",
-      "enabled": true
-    },
-    {
-      "id": "cad_tnp_39.dwg",
-      "type": "file",
-      "category": "Bản vẽ CAD",
-      "name": "TNP_39.DWG",
-      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\6_TANG NHON PHU\\TNP_39.DWG",
-      "exe": "C:\\Program Files\\Autodesk\\AutoCAD 2023\\acad.exe",
-      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\6_TANG NHON PHU\\TNP_39.DWG",
-      "enabled": true
-    },
-    {
-      "id": "cad_tnp_41.dwg",
-      "type": "file",
-      "category": "Bản vẽ CAD",
-      "name": "TNP_41.DWG",
-      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\6_TANG NHON PHU\\TNP_41.DWG",
-      "exe": "C:\\Program Files\\Autodesk\\AutoCAD 2023\\acad.exe",
-      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\6_TANG NHON PHU\\TNP_41.DWG",
-      "enabled": true
-    },
-    {
-      "id": "cad_tnp_103.dwg",
-      "type": "file",
-      "category": "Bản vẽ CAD",
-      "name": "TNP_103.dwg",
-      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\6_TANG NHON PHU\\TNP_103.dwg",
-      "exe": "C:\\Program Files\\Autodesk\\AutoCAD 2023\\acad.exe",
-      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\6_TANG NHON PHU\\TNP_103.dwg",
-      "enabled": true
-    },
-    {
-      "id": "cad_tnp_80.dwg",
-      "type": "file",
-      "category": "Bản vẽ CAD",
-      "name": "TNP_80.dwg",
-      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\6_TANG NHON PHU\\TNP_80.dwg",
-      "exe": "C:\\Program Files\\Autodesk\\AutoCAD 2023\\acad.exe",
-      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\6_TANG NHON PHU\\TNP_80.dwg",
-      "enabled": true
-    },
-    {
-      "id": "cad_tnp_78.dwg",
-      "type": "file",
-      "category": "Bản vẽ CAD",
-      "name": "TNP_78.dwg",
-      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\6_TANG NHON PHU\\TNP_78.dwg",
-      "exe": "C:\\Program Files\\Autodesk\\AutoCAD 2023\\acad.exe",
-      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\6_TANG NHON PHU\\TNP_78.dwg",
+      "args": [],
       "enabled": true
     },
     {
@@ -171,12 +129,51 @@
       "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU",
       "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU",
       "enabled": true
+    },
+    {
+      "id": "folder_d:\\!!!chuyen trach csdl kh 483\\tangnhonphu\\bandotlc\\2. tan phu",
+      "type": "folder",
+      "category": "Thư mục",
+      "name": "2. TAN PHU",
+      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\BANDOTLC\\2. TAN PHU",
+      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\BANDOTLC\\2. TAN PHU",
+      "enabled": true
+    },
+    {
+      "id": "folder_d:\\!!!chuyen trach csdl kh 483\\longbinh",
+      "type": "folder",
+      "category": "Thư mục",
+      "name": "LONGBINH",
+      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH",
+      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH",
+      "enabled": true
     }
   ],
   "profiles": {
     "auto_snapshot": {
-      "saved_at": "2026-11-07 08:47:09",
+      "saved_at": "2026-11-07 20:56:27",
       "items": [
+        {
+          "id": "browser_edge",
+          "type": "browser",
+          "category": "Trình duyệt",
+          "name": "Microsoft Edge",
+          "detail": "Khôi phục toàn bộ Tabs",
+          "exe": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+          "args": [
+            "--restore-last-session"
+          ],
+          "layout": {
+            "rect": [
+              -9,
+              -9,
+              1938,
+              1038
+            ],
+            "state": 3
+          },
+          "enabled": true
+        },
         {
           "id": "browser_chrome",
           "type": "browser",
@@ -187,7 +184,15 @@
           "args": [
             "--restore-last-session"
           ],
-          "layout": null,
+          "layout": {
+            "rect": [
+              -9,
+              -9,
+              1938,
+              1038
+            ],
+            "state": 3
+          },
           "enabled": true
         },
         {
@@ -202,99 +207,32 @@
           "enabled": true
         },
         {
-          "id": "browser_edge",
-          "type": "browser",
-          "category": "Trình duyệt",
-          "name": "Microsoft Edge",
-          "detail": "Khôi phục toàn bộ Tabs",
-          "exe": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
-          "args": [
-            "--restore-last-session"
-          ],
-          "layout": null,
-          "enabled": true
-        },
-        {
-          "id": "excel_file_d:\\!!!chuyen trach csdl kh 483\\tangnhonphu\\tang nhon phu-thửa ảo (1).xlsx",
+          "id": "micro_dc61.dgn",
           "type": "file",
-          "category": "Bảng tính",
-          "name": "TANG NHON PHU-THỬA ẢO (1).xlsx",
-          "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\TANG NHON PHU-THỬA ẢO (1).xlsx",
-          "exe": "C:\\Program Files\\Microsoft Office\\Root\\Office16\\EXCEL.EXE",
-          "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\TANG NHON PHU-THỬA ẢO (1).xlsx",
-          "layout": {
-            "rect": [
-              -9,
-              -9,
-              1938,
-              1038
-            ],
-            "state": 3
-          },
-          "enabled": true
-        },
-        {
-          "id": "app_micro",
-          "type": "app",
           "category": "MicroStation",
-          "name": "MicroStation V8i",
-          "detail": "C:\\Program Files (x86)\\Bentley\\MicroStation V8i (SELECTseries)\\MicroStation\\ustation.exe",
+          "name": "dc61.dgn",
+          "detail": "D:\\4.90 NGAY DEM\\CATLAI\\CatLai\\500\\dc61.dgn",
           "exe": "C:\\Program Files (x86)\\Bentley\\MicroStation V8i (SELECTseries)\\MicroStation\\ustation.exe",
-          "args": [],
+          "target": "D:\\4.90 NGAY DEM\\CATLAI\\CatLai\\500\\dc61.dgn",
           "enabled": true
         },
         {
-          "id": "folder_d:\\!!!chuyen trach csdl kh 483\\tangnhonphu\\6_tang nhon phu",
-          "type": "folder",
-          "category": "Thư mục",
-          "name": "6_TANG NHON PHU",
-          "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\6_TANG NHON PHU",
-          "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\6_TANG NHON PHU",
+          "id": "micro_dc06.dgn",
+          "type": "file",
+          "category": "MicroStation",
+          "name": "dc06.dgn",
+          "detail": "D:\\4.90 NGAY DEM\\CATLAI\\CatLai\\500\\dc06.dgn",
+          "exe": "C:\\Program Files (x86)\\Bentley\\MicroStation V8i (SELECTseries)\\MicroStation\\ustation.exe",
+          "target": "D:\\4.90 NGAY DEM\\CATLAI\\CatLai\\500\\dc06.dgn",
           "enabled": true
         },
         {
-          "id": "folder_d:\\!!!chuyen trach csdl kh 483\\tangnhonphu\\tangnhophu\\200",
-          "type": "folder",
-          "category": "Thư mục",
-          "name": "200",
-          "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\TangNhoPhu\\200",
-          "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\TangNhoPhu\\200",
-          "enabled": true
-        },
-        {
-          "id": "folder_d:\\!!!chuyen trach csdl kh 483\\tangnhonphu\\tangnhophu\\500",
+          "id": "folder_d:\\4.90 ngay dem\\catlai\\catlai\\500",
           "type": "folder",
           "category": "Thư mục",
           "name": "500",
-          "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\TangNhoPhu\\500",
-          "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\TangNhoPhu\\500",
-          "enabled": true
-        },
-        {
-          "id": "folder_d:\\!!!chuyen trach csdl kh 483\\tangnhonphu\\so da ngoai _ quan 9",
-          "type": "folder",
-          "category": "Thư mục",
-          "name": "SO DA NGOAI _ QUAN 9",
-          "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\SO DA NGOAI _ QUAN 9",
-          "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\SO DA NGOAI _ QUAN 9",
-          "enabled": true
-        },
-        {
-          "id": "folder_d:\\dulieuvpdk",
-          "type": "folder",
-          "category": "Thư mục",
-          "name": "DuLieuVPDK",
-          "detail": "D:\\DuLieuVPDK",
-          "target": "D:\\DuLieuVPDK",
-          "enabled": true
-        },
-        {
-          "id": "folder_d:\\!!!chuyen trach csdl kh 483\\tangnhonphu",
-          "type": "folder",
-          "category": "Thư mục",
-          "name": "TANGNHONPHU",
-          "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU",
-          "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU",
+          "detail": "D:\\4.90 NGAY DEM\\CATLAI\\CatLai\\500",
+          "target": "D:\\4.90 NGAY DEM\\CATLAI\\CatLai\\500",
           "enabled": true
         }
       ]

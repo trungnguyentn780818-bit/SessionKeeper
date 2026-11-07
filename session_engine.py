@@ -665,11 +665,11 @@ def restore_cad_drawings(cad_items, progress_callback=None, total_count=0, curre
 
         try:
             if scr_path and os.path.exists(acad_exe):
-                subprocess.Popen([acad_exe, first_target, "/b", scr_path], creationflags=subprocess.CREATE_NO_WINDOW)
+                subprocess.Popen([acad_exe, first_target, "/b", scr_path])
             elif ac_launcher:
-                subprocess.Popen([ac_launcher, "/O", first_target], creationflags=subprocess.CREATE_NO_WINDOW)
+                subprocess.Popen([ac_launcher, "/O", first_target])
             elif os.path.exists(acad_exe):
-                subprocess.Popen([acad_exe, first_target], creationflags=subprocess.CREATE_NO_WINDOW)
+                subprocess.Popen([acad_exe, first_target])
             else:
                 os.startfile(first_target)
 
@@ -697,7 +697,7 @@ def restore_cad_drawings(cad_items, progress_callback=None, total_count=0, curre
                 progress_callback(f"Nạp bản vẽ: {name}", current_idx, total_count)
             try:
                 if ac_launcher:
-                    subprocess.Popen([ac_launcher, "/O", target], creationflags=subprocess.CREATE_NO_WINDOW)
+                    subprocess.Popen([ac_launcher, "/O", target])
                 else:
                     os.startfile(target)
                 launched.append(name)
@@ -950,62 +950,42 @@ def restore_session(profile_name="latest", delay=0.4, restore_layout=True, progr
             errors=errors
         )
 
-    # 3. Khôi phục bảng tính Excel (Mở toàn bộ sổ làm việc trong cùng 1 cửa sổ Excel)
+    # 3. Khôi phục bảng tính Excel (Mở toàn bộ sổ làm việc bằng Windows Shell gốc)
     if excel_items:
         valid_excel = [it for it in excel_items if it.get("target") and os.path.exists(it["target"])]
-        if valid_excel:
-            excel_exe = None
-            for it in valid_excel:
-                if it.get("exe") and os.path.exists(it["exe"]):
-                    excel_exe = it["exe"]
-                    break
-
-            excel_targets = [it["target"] for it in valid_excel]
-            for it in valid_excel:
-                current_idx += 1
-                if progress_callback:
-                    progress_callback(it.get("name"), current_idx, total_count)
-                launched.append(it.get("name"))
-
+        for it in valid_excel:
+            current_idx += 1
+            name = it.get("name", "Excel Sheet")
+            target = it["target"]
+            if progress_callback:
+                progress_callback(f"Mở Excel: {name}", current_idx, total_count)
             try:
-                if excel_exe:
-                    # Truyền tất cả các file cùng lúc vào excel.exe để mở lồng trong 1 cửa sổ
-                    subprocess.Popen([excel_exe] + excel_targets, creationflags=subprocess.CREATE_NO_WINDOW)
-                else:
-                    for t in excel_targets:
-                        os.startfile(t)
-                        time.sleep(0.3)
+                # Khởi chạy qua os.startfile để sử dụng Windows Shell association chuẩn, tránh lỗi App-V virtualization
+                os.startfile(target)
+                launched.append(name)
             except Exception as e:
-                errors.append(f"Excel: {e}")
+                errors.append(f"{name}: {e}")
+            time.sleep(0.4)
 
         for it in excel_items:
             if not it.get("target") or not os.path.exists(it.get("target")):
                 errors.append(f"{it.get('name')}: Tệp Excel không tồn tại")
 
-    # 4. Khôi phục tài liệu Word (Mở trong 1 phiên Word)
+    # 4. Khôi phục tài liệu Word (Mở bằng Windows Shell gốc)
     if word_items:
         valid_word = [it for it in word_items if it.get("target") and os.path.exists(it["target"])]
-        if valid_word:
-            word_exe = None
-            for it in valid_word:
-                if it.get("exe") and os.path.exists(it["exe"]):
-                    word_exe = it["exe"]
-                    break
-            word_targets = [it["target"] for it in valid_word]
-            for it in valid_word:
-                current_idx += 1
-                if progress_callback:
-                    progress_callback(it.get("name"), current_idx, total_count)
-                launched.append(it.get("name"))
+        for it in valid_word:
+            current_idx += 1
+            name = it.get("name", "Word Document")
+            target = it["target"]
+            if progress_callback:
+                progress_callback(f"Mở Word: {name}", current_idx, total_count)
             try:
-                if word_exe:
-                    subprocess.Popen([word_exe] + word_targets, creationflags=subprocess.CREATE_NO_WINDOW)
-                else:
-                    for t in word_targets:
-                        os.startfile(t)
-                        time.sleep(0.3)
+                os.startfile(target)
+                launched.append(name)
             except Exception as e:
-                errors.append(f"Word: {e}")
+                errors.append(f"{name}: {e}")
+            time.sleep(0.4)
 
         for it in word_items:
             if not it.get("target") or not os.path.exists(it.get("target")):
@@ -1024,7 +1004,7 @@ def restore_session(profile_name="latest", delay=0.4, restore_layout=True, progr
             try:
                 proc = None
                 if exe and os.path.exists(exe):
-                    proc = subprocess.Popen([exe, target], creationflags=subprocess.CREATE_NO_WINDOW)
+                    proc = subprocess.Popen([exe, target])
                 else:
                     os.startfile(target)
                 launched.append(name)
@@ -1079,7 +1059,7 @@ def restore_session(profile_name="latest", delay=0.4, restore_layout=True, progr
             launched_app_exes.add(exe.lower())
             try:
                 if args:
-                    subprocess.Popen([exe] + args, creationflags=subprocess.CREATE_NO_WINDOW)
+                    subprocess.Popen([exe] + args)
                 else:
                     os.startfile(exe)
                 launched.append(name)
