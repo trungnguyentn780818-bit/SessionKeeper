@@ -560,6 +560,157 @@ def get_autocad_launcher():
             return c
     return None
 
+def set_autocad_taskbar_zero():
+    """
+    Thiết lập TASKBAR = 0 cho tất cả phiên bản AutoCAD trong Windows Registry.
+    Giúp Windows gộp tất cả bản vẽ mở trong AutoCAD thành 1 thumbnail duy nhất trên Taskbar thay vì xé lẻ thành nhiều card.
+    """
+    try:
+        base = r"Software\Autodesk\AutoCAD"
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, base) as k:
+            num = winreg.QueryInfoKey(k)[0]
+            for i in range(num):
+                ver = winreg.EnumKey(k, i)
+                try:
+                    with winreg.OpenKey(winreg.HKEY_CURRENT_USER, f"{base}\\{ver}") as k2:
+                        n2 = winreg.QueryInfoKey(k2)[0]
+                        for j in range(n2):
+                            sub = winreg.EnumKey(k2, j)
+                            target_key = f"{base}\\{ver}\\{sub}\\FixedProfile\\General"
+                            try:
+                                with winreg.OpenKey(winreg.HKEY_CURRENT_USER, target_key, 0, winreg.KEY_SET_VALUE) as kg:
+                                    winreg.SetValueEx(kg, "TaskBar", 0, winreg.REG_DWORD, 0)
+                            except Exception:
+                                pass
+                except Exception:
+                    pass
+    except Exception:
+        pass
+
+def is_autocad_ready():
+    """Kiểm tra xem AutoCAD đã khởi động xong và hiển thị giao diện chính chưa."""
+    ready = False
+    def cb(hwnd, _):
+        nonlocal ready
+        if win32gui.IsWindowVisible(hwnd):
+            title = win32gui.GetWindowText(hwnd).lower()
+            if "autodesk autocad" in title or "autocad 20" in title:
+                ready = True
+    try:
+        win32gui.EnumWindows(cb, None)
+    except Exception:
+        pass
+    return ready
+
+def restore_cad_drawings(cad_items, progress_callback=None, total_count=0, current_idx=0, launched=None, errors=None):
+    """
+    Khôi phục danh sách bản vẽ CAD lồng thành các Tab trong cùng 1 cửa sổ AutoCAD duy nhất.
+    Đảm bảo 100% không bị bung thành nhiều cửa sổ hay nhiều taskbar card rời rạc.
+    """
+    if launched is None:
+        launched = []
+    if errors is None:
+        errors = []
+
+    valid_cad = [it for it in cad_items if it.get("target") and os.path.exists(it["target"])]
+    if not valid_cad:
+        for it in cad_items:
+            errors.append(f"{it.get('name')}: Tệp bản vẽ không tồn tại")
+        return current_idx
+
+    # 1. Khóa TASKBAR = 0 trong Registry để gộp thumbnail Taskbar về 1 card duy nhất
+    set_autocad_taskbar_zero()
+
+    ac_launcher = get_autocad_launcher()
+    acad_exe = None
+    for it in valid_cad:
+        if it.get("exe") and os.path.exists(it["exe"]):
+            acad_exe = it["exe"]
+            break
+    if not acad_exe:
+        acad_exe = r"C:\Program Files\Autodesk\AutoCAD 2023\acad.exe"
+
+    acad_running = is_process_running("acad.exe")
+
+    # TRƯỜNG HỢP 1: AutoCAD CHƯA CHẠY (Khởi động nguội / vừa bật máy)
+    if not acad_running:
+        first_it = valid_cad[0]
+        first_target = first_it["target"]
+        current_idx += 1
+        name = first_it.get("name", "AutoCAD")
+        if progress_callback:
+            progress_callback(f"Khởi động AutoCAD & nạp {len(valid_cad)} bản vẽ...", current_idx, total_count)
+
+        remaining = valid_cad[1:]
+        scr_path = None
+        if remaining:
+            try:
+                import tempfile
+                scr_file = Path(tempfile.gettempdir()) / "sk_open_cad_tabs.scr"
+                lines = [
+                    '(setvar "TASKBAR" 0)',
+                    '(vl-load-com)',
+                    '(setq acad-docs (vla-get-documents (vlax-get-acad-object)))'
+                ]
+                for rem_it in remaining:
+                    target_lisp = rem_it["target"].replace("\\", "/")
+                    lines.append(f'(vla-open acad-docs "{target_lisp}")')
+                lines.append('(princ)')
+                lines.append('')
+                with open(scr_file, "w", encoding="utf-8") as f:
+                    f.write("\n".join(lines))
+                scr_path = str(scr_file)
+            except Exception as e:
+                print(f"Error generating CAD script: {e}")
+
+        try:
+            if scr_path and os.path.exists(acad_exe):
+                subprocess.Popen([acad_exe, first_target, "/b", scr_path], creationflags=subprocess.CREATE_NO_WINDOW)
+            elif ac_launcher:
+                subprocess.Popen([ac_launcher, "/O", first_target], creationflags=subprocess.CREATE_NO_WINDOW)
+            elif os.path.exists(acad_exe):
+                subprocess.Popen([acad_exe, first_target], creationflags=subprocess.CREATE_NO_WINDOW)
+            else:
+                os.startfile(first_target)
+
+            launched.append(first_it.get("name"))
+            for r in remaining:
+                current_idx += 1
+                launched.append(r.get("name"))
+        except Exception as e:
+            errors.append(f"{first_it.get('name')}: {e}")
+
+        # Chờ tối đa 20 giây cho AutoCAD hoàn tất nạp giao diện trước khi tiếp tục các app khác
+        for _ in range(40):
+            time.sleep(0.5)
+            if is_autocad_ready():
+                time.sleep(1.0)
+                break
+
+    # TRƯỜNG HỢP 2: AutoCAD ĐÃ ĐANG CHẠY SẴN
+    else:
+        for it in valid_cad:
+            current_idx += 1
+            name = it.get("name", "CAD Drawing")
+            target = it["target"]
+            if progress_callback:
+                progress_callback(f"Nạp bản vẽ: {name}", current_idx, total_count)
+            try:
+                if ac_launcher:
+                    subprocess.Popen([ac_launcher, "/O", target], creationflags=subprocess.CREATE_NO_WINDOW)
+                else:
+                    os.startfile(target)
+                launched.append(name)
+            except Exception as e:
+                errors.append(f"{name}: {e}")
+            time.sleep(1.0) # Đảm bảo DDE server của AutoCAD xử lý xong file trước khi nhận file tiếp theo
+
+    for it in cad_items:
+        if not it.get("target") or not os.path.exists(it.get("target")):
+            errors.append(f"{it.get('name')}: Tệp bản vẽ không tồn tại")
+
+    return current_idx
+
 def restore_folders_in_tabs(folder_items, progress_callback=None, total_count=0, current_idx=0, launched=None, errors=None):
     """
     Khôi phục danh sách thư mục lồng thành các Tab trong cùng 1 cửa sổ File Explorer duy nhất.
@@ -608,6 +759,17 @@ def restore_folders_in_tabs(folder_items, progress_callback=None, total_count=0,
             pass
         return hwnd
 
+    def get_tab_controls(cab_hwnd):
+        tabs = []
+        def enum_tab(h, _):
+            if win32gui.GetClassName(h) == 'ShellTabWindowClass':
+                tabs.append(h)
+        try:
+            win32gui.EnumChildWindows(cab_hwnd, enum_tab, None)
+        except Exception:
+            pass
+        return tabs
+
     hwnd_cabinet = get_cabinet_hwnd()
     start_idx = 0
 
@@ -623,15 +785,17 @@ def restore_folders_in_tabs(folder_items, progress_callback=None, total_count=0,
         launched.append(name)
         start_idx = 1
 
-        # Chờ tối đa 3 giây cho cửa sổ File Explorer hiển thị và nạp xong giao diện
-        for _ in range(15):
-            time.sleep(0.2)
+        # Chờ tối đa 8 giây cho cửa sổ File Explorer hiển thị và nạp xong Tab control
+        for _ in range(32):
+            time.sleep(0.25)
             hwnd_cabinet = get_cabinet_hwnd()
             if hwnd_cabinet:
-                time.sleep(0.5)
-                break
+                tabs = get_tab_controls(hwnd_cabinet)
+                if tabs:
+                    time.sleep(0.5)
+                    break
 
-    # Nếu không tìm thấy cửa sổ (ví dụ Win 10), mở bình thường các thư mục còn lại
+    # Nếu không tìm thấy cửa sổ (ví dụ Win 10 không có Tab), mở bình thường các thư mục còn lại
     if not hwnd_cabinet or not shell:
         for it in valid_folders[start_idx:]:
             current_idx += 1
@@ -654,16 +818,16 @@ def restore_folders_in_tabs(folder_items, progress_callback=None, total_count=0,
         if progress_callback:
             progress_callback(f"Tạo Tab: {name}", current_idx, total_count)
 
-        tabs = []
-        def enum_tab(h, _):
-            if win32gui.GetClassName(h) == 'ShellTabWindowClass':
-                tabs.append(h)
-        try:
-            win32gui.EnumChildWindows(hwnd_cabinet, enum_tab, None)
-        except Exception:
-            pass
+        tabs = get_tab_controls(hwnd_cabinet)
+        if not tabs:
+            for _ in range(8):
+                time.sleep(0.25)
+                tabs = get_tab_controls(hwnd_cabinet)
+                if tabs:
+                    break
 
         if not tabs:
+            # Fallback nếu không có tab control
             os.startfile(target)
             launched.append(name)
             time.sleep(0.3)
@@ -674,10 +838,10 @@ def restore_folders_in_tabs(folder_items, progress_callback=None, total_count=0,
             # Gửi thông điệp hệ thống WM_COMMAND 0xA21B (41499) để tạo Tab mới trong Windows 11
             win32gui.SendMessage(tabs[0], 0x0111, 0xA21B, 0)
 
-            # Chờ Tab mới xuất hiện trong Shell.Windows()
+            # Chờ Tab mới xuất hiện trong Shell.Windows() (tối đa 3 giây)
             new_tab = None
-            for _ in range(12):
-                time.sleep(0.12)
+            for _ in range(20):
+                time.sleep(0.15)
                 if shell.Windows().Count > prev_count:
                     new_tab = shell.Windows().Item(shell.Windows().Count - 1)
                     break
@@ -686,12 +850,26 @@ def restore_folders_in_tabs(folder_items, progress_callback=None, total_count=0,
                 new_tab.Navigate(target)
                 launched.append(name)
             else:
-                os.startfile(target)
+                # Nếu COM chưa kịp bắt, gửi phím tắt Ctrl+T trực tiếp rồi điều hướng
+                try:
+                    win32gui.SetForegroundWindow(hwnd_cabinet)
+                    time.sleep(0.1)
+                    win32api.keybd_event(win32con.VK_CONTROL, 0, 0, 0)
+                    win32api.keybd_event(ord('T'), 0, 0, 0)
+                    time.sleep(0.05)
+                    win32api.keybd_event(ord('T'), 0, win32con.KEYEVENTF_KEYUP, 0)
+                    win32api.keybd_event(win32con.VK_CONTROL, 0, win32con.KEYEVENTF_KEYUP, 0)
+                    time.sleep(0.5)
+                    if shell.Windows().Count > prev_count:
+                        new_t = shell.Windows().Item(shell.Windows().Count - 1)
+                        new_t.Navigate(target)
+                except Exception:
+                    pass
                 launched.append(name)
         except Exception as e:
             errors.append(f"{name}: {e}")
 
-        time.sleep(0.2)
+        time.sleep(0.25)
 
     for it in folder_items:
         if not it.get("target") or not os.path.exists(it.get("target")):
@@ -761,64 +939,16 @@ def restore_session(profile_name="latest", delay=0.4, restore_layout=True, progr
         if delay > 0:
             time.sleep(delay)
 
-    # 2. Khôi phục bản vẽ CAD (Lồng toàn bộ bản vẽ thành các Tab trong cùng 1 cửa sổ CAD)
+    # 2. Khôi phục bản vẽ CAD (Lồng toàn bộ bản vẽ thành các Tab trong cùng 1 cửa sổ CAD duy nhất)
     if cad_items:
-        ac_launcher = get_autocad_launcher()
-        valid_cad = [it for it in cad_items if it.get("target") and os.path.exists(it["target"])]
-
-        if valid_cad:
-            cad_targets = [it["target"] for it in valid_cad]
-            acad_running = is_process_running("acad.exe")
-
-            # Nếu AutoCAD chưa chạy, khởi chạy bản vẽ đầu tiên và đợi khởi tạo xong listener
-            if not acad_running:
-                first_it = valid_cad[0]
-                first_target = first_it["target"]
-                current_idx += 1
-                if progress_callback:
-                    progress_callback(f"Mở AutoCAD: {first_it.get('name')}", current_idx, total_count)
-                try:
-                    if ac_launcher:
-                        subprocess.Popen([ac_launcher, "/O", first_target], creationflags=subprocess.CREATE_NO_WINDOW)
-                    elif first_it.get("exe") and os.path.exists(first_it["exe"]):
-                        subprocess.Popen([first_it["exe"], first_target], creationflags=subprocess.CREATE_NO_WINDOW)
-                    else:
-                        os.startfile(first_target)
-                    launched.append(first_it.get("name"))
-                except Exception as e:
-                    errors.append(f"{first_it.get('name')}: {e}")
-
-                # Chờ AutoCAD hiển thị giao diện và đăng ký DDE/COM listener (tối đa 4s)
-                for _ in range(8):
-                    if is_process_running("acad.exe"):
-                        time.sleep(1.5)
-                        break
-                    time.sleep(0.5)
-
-                remaining = valid_cad[1:]
-            else:
-                remaining = valid_cad
-
-            # Mở tất cả các bản vẽ còn lại lồng vào cửa sổ AutoCAD đang mở thành từng Tab
-            for it in remaining:
-                current_idx += 1
-                name = it.get("name", "CAD Drawing")
-                target = it["target"]
-                if progress_callback:
-                    progress_callback(name, current_idx, total_count)
-                try:
-                    if ac_launcher:
-                        subprocess.Popen([ac_launcher, "/O", target], creationflags=subprocess.CREATE_NO_WINDOW)
-                    else:
-                        os.startfile(target)
-                    launched.append(name)
-                except Exception as e:
-                    errors.append(f"{name}: {e}")
-                time.sleep(0.3)
-
-        for it in cad_items:
-            if not it.get("target") or not os.path.exists(it.get("target")):
-                errors.append(f"{it.get('name')}: Tệp bản vẽ không tồn tại")
+        current_idx = restore_cad_drawings(
+            cad_items,
+            progress_callback=progress_callback,
+            total_count=total_count,
+            current_idx=current_idx,
+            launched=launched,
+            errors=errors
+        )
 
     # 3. Khôi phục bảng tính Excel (Mở toàn bộ sổ làm việc trong cùng 1 cửa sổ Excel)
     if excel_items:

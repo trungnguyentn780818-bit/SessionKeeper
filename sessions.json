@@ -1,19 +1,6 @@
 {
   "latest": [
     {
-      "id": "browser_chrome",
-      "type": "browser",
-      "category": "Trình duyệt",
-      "name": "Google Chrome",
-      "detail": "Khôi phục toàn bộ Tabs",
-      "exe": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-      "args": [
-        "--restore-last-session"
-      ],
-      "layout": null,
-      "enabled": true
-    },
-    {
       "id": "browser_edge",
       "type": "browser",
       "category": "Trình duyệt",
@@ -27,12 +14,25 @@
       "enabled": true
     },
     {
+      "id": "browser_chrome",
+      "type": "browser",
+      "category": "Trình duyệt",
+      "name": "Google Chrome",
+      "detail": "Khôi phục toàn bộ Tabs",
+      "exe": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+      "args": [
+        "--restore-last-session"
+      ],
+      "layout": null,
+      "enabled": true
+    },
+    {
       "id": "app_zalo",
       "type": "app",
       "category": "Liên lạc",
       "name": "Zalo PC",
-      "detail": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\Zalo\\Zalo-26.10.20\\Zalo.exe",
-      "exe": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\Zalo\\Zalo-26.10.20\\Zalo.exe",
+      "detail": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\Zalo\\Zalo-26.11.10\\Zalo.exe",
+      "exe": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\Zalo\\Zalo-26.11.10\\Zalo.exe",
       "args": [],
       "layout": null,
       "enabled": true
@@ -49,165 +49,133 @@
       "enabled": true
     },
     {
-      "id": "cad_126lb_(11ltm).dwg",
+      "id": "cad_ban do phan manh-phuong tang nhon phu.dwg",
       "type": "file",
       "category": "Bản vẽ CAD",
-      "name": "126LB_(11LTM).dwg",
-      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\126LB_(11LTM).dwg",
+      "name": "BAN DO PHAN MANH-PHUONG TANG NHON PHU.dwg",
+      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\BAN DO PHAN MANH-PHUONG TANG NHON PHU.dwg",
       "exe": "C:\\Program Files\\Autodesk\\AutoCAD 2023\\acad.exe",
-      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\126LB_(11LTM).dwg",
+      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\BAN DO PHAN MANH-PHUONG TANG NHON PHU.dwg",
       "enabled": true
     },
     {
-      "id": "cad_148lb_(33ltm).dwg",
+      "id": "cad_tnp_39.dwg",
       "type": "file",
       "category": "Bản vẽ CAD",
-      "name": "148LB_(33LTM).dwg",
-      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\148LB_(33LTM).dwg",
+      "name": "TNP_39.DWG",
+      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\6_TANG NHON PHU\\TNP_39.DWG",
       "exe": "C:\\Program Files\\Autodesk\\AutoCAD 2023\\acad.exe",
-      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\148LB_(33LTM).dwg",
+      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\6_TANG NHON PHU\\TNP_39.DWG",
       "enabled": true
     },
     {
-      "id": "cad_phan manh long binh.dwg",
+      "id": "cad_tnp_41.dwg",
       "type": "file",
       "category": "Bản vẽ CAD",
-      "name": "PHAN MANH LONG BINH.dwg",
-      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\PHAN MANH LONG BINH.dwg",
+      "name": "TNP_41.DWG",
+      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\6_TANG NHON PHU\\TNP_41.DWG",
       "exe": "C:\\Program Files\\Autodesk\\AutoCAD 2023\\acad.exe",
-      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\PHAN MANH LONG BINH.dwg",
+      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\6_TANG NHON PHU\\TNP_41.DWG",
       "enabled": true
     },
     {
-      "id": "cad_143lb_(28ltm).dwg",
+      "id": "cad_tnp_103.dwg",
       "type": "file",
       "category": "Bản vẽ CAD",
-      "name": "143LB_(28LTM).dwg",
-      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\143LB_(28LTM).dwg",
+      "name": "TNP_103.dwg",
+      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\6_TANG NHON PHU\\TNP_103.dwg",
       "exe": "C:\\Program Files\\Autodesk\\AutoCAD 2023\\acad.exe",
-      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\143LB_(28LTM).dwg",
+      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\6_TANG NHON PHU\\TNP_103.dwg",
       "enabled": true
     },
     {
-      "id": "cad_129lb_(14ltm).dwg",
+      "id": "cad_tnp_80.dwg",
       "type": "file",
       "category": "Bản vẽ CAD",
-      "name": "129LB_(14LTM).dwg",
-      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\129LB_(14LTM).dwg",
+      "name": "TNP_80.dwg",
+      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\6_TANG NHON PHU\\TNP_80.dwg",
       "exe": "C:\\Program Files\\Autodesk\\AutoCAD 2023\\acad.exe",
-      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\129LB_(14LTM).dwg",
+      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\6_TANG NHON PHU\\TNP_80.dwg",
       "enabled": true
     },
     {
-      "id": "cad_119lb_(4ltm).dwg",
+      "id": "cad_tnp_78.dwg",
       "type": "file",
       "category": "Bản vẽ CAD",
-      "name": "119LB_(4LTM).dwg",
-      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\119LB_(4LTM).dwg",
+      "name": "TNP_78.dwg",
+      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\6_TANG NHON PHU\\TNP_78.dwg",
       "exe": "C:\\Program Files\\Autodesk\\AutoCAD 2023\\acad.exe",
-      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\119LB_(4LTM).dwg",
+      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\6_TANG NHON PHU\\TNP_78.dwg",
       "enabled": true
     },
     {
-      "id": "cad_127lb_(12ltm).dwg",
-      "type": "file",
-      "category": "Bản vẽ CAD",
-      "name": "127LB_(12LTM).dwg",
-      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\127LB_(12LTM).dwg",
-      "exe": "C:\\Program Files\\Autodesk\\AutoCAD 2023\\acad.exe",
-      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\127LB_(12LTM).dwg",
-      "enabled": true
-    },
-    {
-      "id": "cad_125lb_(10ltm).dwg",
-      "type": "file",
-      "category": "Bản vẽ CAD",
-      "name": "125LB_(10LTM).dwg",
-      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\125LB_(10LTM).dwg",
-      "exe": "C:\\Program Files\\Autodesk\\AutoCAD 2023\\acad.exe",
-      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\125LB_(10LTM).dwg",
-      "enabled": true
-    },
-    {
-      "id": "cad_128lb_(13ltm).dwg",
-      "type": "file",
-      "category": "Bản vẽ CAD",
-      "name": "128LB_(13LTM).dwg",
-      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\128LB_(13LTM).dwg",
-      "exe": "C:\\Program Files\\Autodesk\\AutoCAD 2023\\acad.exe",
-      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\128LB_(13LTM).dwg",
-      "enabled": true
-    },
-    {
-      "id": "cad_4.dwg",
-      "type": "file",
-      "category": "Bản vẽ CAD",
-      "name": "4.dwg",
-      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\2. LONG BINH\\4.dwg",
-      "exe": "C:\\Program Files\\Autodesk\\AutoCAD 2023\\acad.exe",
-      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\2. LONG BINH\\4.dwg",
-      "enabled": true
-    },
-    {
-      "id": "micro_dc128(13ltm).dgn",
-      "type": "file",
+      "id": "app_micro",
+      "type": "app",
       "category": "MicroStation",
-      "name": "dc128(13LTM).dgn",
-      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\LongBinh\\500\\dc128(13LTM).dgn",
+      "name": "MicroStation V8i",
+      "detail": "C:\\Program Files (x86)\\Bentley\\MicroStation V8i (SELECTseries)\\MicroStation\\ustation.exe",
       "exe": "C:\\Program Files (x86)\\Bentley\\MicroStation V8i (SELECTseries)\\MicroStation\\ustation.exe",
-      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\LongBinh\\500\\dc128(13LTM).dgn",
+      "args": [],
       "enabled": true
     },
     {
-      "id": "micro_dc129(14ltm).dgn",
-      "type": "file",
-      "category": "MicroStation",
-      "name": "dc129(14LTM).dgn",
-      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\LongBinh\\500\\dc129(14LTM).dgn",
-      "exe": "C:\\Program Files (x86)\\Bentley\\MicroStation V8i (SELECTseries)\\MicroStation\\ustation.exe",
-      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\LongBinh\\500\\dc129(14LTM).dgn",
-      "enabled": true
-    },
-    {
-      "id": "folder_d:\\!!!chuyen trach csdl kh 483\\longbinh\\longbinh\\1000",
+      "id": "folder_d:\\!!!chuyen trach csdl kh 483\\tangnhonphu\\6_tang nhon phu",
       "type": "folder",
       "category": "Thư mục",
-      "name": "1000",
-      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\LongBinh\\1000",
-      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\LongBinh\\1000",
+      "name": "6_TANG NHON PHU",
+      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\6_TANG NHON PHU",
+      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\6_TANG NHON PHU",
       "enabled": true
     },
     {
-      "id": "folder_d:\\!!!chuyen trach csdl kh 483\\longbinh\\longbinh\\500",
+      "id": "folder_d:\\!!!chuyen trach csdl kh 483\\tangnhonphu\\tangnhophu\\200",
+      "type": "folder",
+      "category": "Thư mục",
+      "name": "200",
+      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\TangNhoPhu\\200",
+      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\TangNhoPhu\\200",
+      "enabled": true
+    },
+    {
+      "id": "folder_d:\\!!!chuyen trach csdl kh 483\\tangnhonphu\\tangnhophu\\500",
       "type": "folder",
       "category": "Thư mục",
       "name": "500",
-      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\LongBinh\\500",
-      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\LongBinh\\500",
+      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\TangNhoPhu\\500",
+      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\TangNhoPhu\\500",
       "enabled": true
     },
     {
-      "id": "folder_d:\\!!!chuyen trach csdl kh 483\\longbinh\\10.long binh-moi 02.01.2026",
+      "id": "folder_d:\\!!!chuyen trach csdl kh 483\\tangnhonphu\\so da ngoai _ quan 9",
       "type": "folder",
       "category": "Thư mục",
-      "name": "10.LONG BINH-moi 02.01.2026",
-      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026",
-      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026",
+      "name": "SO DA NGOAI _ QUAN 9",
+      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\SO DA NGOAI _ QUAN 9",
+      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\SO DA NGOAI _ QUAN 9",
       "enabled": true
     },
     {
-      "id": "folder_d:\\!!!chuyen trach csdl kh 483\\longbinh",
+      "id": "folder_d:\\dulieuvpdk",
       "type": "folder",
       "category": "Thư mục",
-      "name": "LONGBINH",
-      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH",
-      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH",
+      "name": "DuLieuVPDK",
+      "detail": "D:\\DuLieuVPDK",
+      "target": "D:\\DuLieuVPDK",
+      "enabled": true
+    },
+    {
+      "id": "folder_d:\\!!!chuyen trach csdl kh 483\\tangnhonphu",
+      "type": "folder",
+      "category": "Thư mục",
+      "name": "TANGNHONPHU",
+      "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU",
+      "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU",
       "enabled": true
     }
   ],
   "profiles": {
     "auto_snapshot": {
-      "saved_at": "2026-11-02 11:35:10",
+      "saved_at": "2026-11-07 08:47:09",
       "items": [
         {
           "id": "browser_chrome",
@@ -219,15 +187,18 @@
           "args": [
             "--restore-last-session"
           ],
-          "layout": {
-            "rect": [
-              -9,
-              -9,
-              1938,
-              1038
-            ],
-            "state": 3
-          },
+          "layout": null,
+          "enabled": true
+        },
+        {
+          "id": "app_zalo",
+          "type": "app",
+          "category": "Liên lạc",
+          "name": "Zalo PC",
+          "detail": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\Zalo\\Zalo-26.11.10\\Zalo.exe",
+          "exe": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\Zalo\\Zalo-26.11.10\\Zalo.exe",
+          "args": [],
+          "layout": null,
           "enabled": true
         },
         {
@@ -240,36 +211,17 @@
           "args": [
             "--restore-last-session"
           ],
-          "layout": {
-            "rect": [
-              -9,
-              -9,
-              1938,
-              1038
-            ],
-            "state": 3
-          },
-          "enabled": true
-        },
-        {
-          "id": "app_zalo",
-          "type": "app",
-          "category": "Liên lạc",
-          "name": "Zalo PC",
-          "detail": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\Zalo\\Zalo-26.10.20\\Zalo.exe",
-          "exe": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\Zalo\\Zalo-26.10.20\\Zalo.exe",
-          "args": [],
           "layout": null,
           "enabled": true
         },
         {
-          "id": "excel_file_d:\\!!!chuyen trach csdl kh 483\\longbinh\\phường long bình.xlsx",
+          "id": "excel_file_d:\\!!!chuyen trach csdl kh 483\\tangnhonphu\\tang nhon phu-thửa ảo (1).xlsx",
           "type": "file",
           "category": "Bảng tính",
-          "name": "Phường Long Bình.xlsx",
-          "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\Phường Long Bình.xlsx",
+          "name": "TANG NHON PHU-THỬA ẢO (1).xlsx",
+          "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\TANG NHON PHU-THỬA ẢO (1).xlsx",
           "exe": "C:\\Program Files\\Microsoft Office\\Root\\Office16\\EXCEL.EXE",
-          "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\Phường Long Bình.xlsx",
+          "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\TANG NHON PHU-THỬA ẢO (1).xlsx",
           "layout": {
             "rect": [
               -9,
@@ -282,168 +234,67 @@
           "enabled": true
         },
         {
-          "id": "cad_127lb_(12ltm).dwg",
-          "type": "file",
-          "category": "Bản vẽ CAD",
-          "name": "127LB_(12LTM).dwg",
-          "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\127LB_(12LTM).dwg",
-          "exe": "C:\\Program Files\\Autodesk\\AutoCAD 2023\\acad.exe",
-          "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\127LB_(12LTM).dwg",
-          "enabled": true
-        },
-        {
-          "id": "cad_129lb_(14ltm).dwg",
-          "type": "file",
-          "category": "Bản vẽ CAD",
-          "name": "129LB_(14LTM).dwg",
-          "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\129LB_(14LTM).dwg",
-          "exe": "C:\\Program Files\\Autodesk\\AutoCAD 2023\\acad.exe",
-          "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\129LB_(14LTM).dwg",
-          "enabled": true
-        },
-        {
-          "id": "cad_126lb_(11ltm).dwg",
-          "type": "file",
-          "category": "Bản vẽ CAD",
-          "name": "126LB_(11LTM).dwg",
-          "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\126LB_(11LTM).dwg",
-          "exe": "C:\\Program Files\\Autodesk\\AutoCAD 2023\\acad.exe",
-          "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\126LB_(11LTM).dwg",
-          "enabled": true
-        },
-        {
-          "id": "cad_phan manh long binh.dwg",
-          "type": "file",
-          "category": "Bản vẽ CAD",
-          "name": "PHAN MANH LONG BINH.dwg",
-          "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\PHAN MANH LONG BINH.dwg",
-          "exe": "C:\\Program Files\\Autodesk\\AutoCAD 2023\\acad.exe",
-          "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\PHAN MANH LONG BINH.dwg",
-          "enabled": true
-        },
-        {
-          "id": "cad_143lb_(28ltm).dwg",
-          "type": "file",
-          "category": "Bản vẽ CAD",
-          "name": "143LB_(28LTM).dwg",
-          "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\143LB_(28LTM).dwg",
-          "exe": "C:\\Program Files\\Autodesk\\AutoCAD 2023\\acad.exe",
-          "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\143LB_(28LTM).dwg",
-          "enabled": true
-        },
-        {
-          "id": "cad_128lb_(13ltm).dwg",
-          "type": "file",
-          "category": "Bản vẽ CAD",
-          "name": "128LB_(13LTM).dwg",
-          "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\128LB_(13LTM).dwg",
-          "exe": "C:\\Program Files\\Autodesk\\AutoCAD 2023\\acad.exe",
-          "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\128LB_(13LTM).dwg",
-          "enabled": true
-        },
-        {
-          "id": "cad_119lb_(4ltm).dwg",
-          "type": "file",
-          "category": "Bản vẽ CAD",
-          "name": "119LB_(4LTM).dwg",
-          "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\119LB_(4LTM).dwg",
-          "exe": "C:\\Program Files\\Autodesk\\AutoCAD 2023\\acad.exe",
-          "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\119LB_(4LTM).dwg",
-          "enabled": true
-        },
-        {
-          "id": "cad_4.dwg",
-          "type": "file",
-          "category": "Bản vẽ CAD",
-          "name": "4.dwg",
-          "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\2. LONG BINH\\4.dwg",
-          "exe": "C:\\Program Files\\Autodesk\\AutoCAD 2023\\acad.exe",
-          "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\2. LONG BINH\\4.dwg",
-          "enabled": true
-        },
-        {
-          "id": "cad_125lb_(10ltm).dwg",
-          "type": "file",
-          "category": "Bản vẽ CAD",
-          "name": "125LB_(10LTM).dwg",
-          "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\125LB_(10LTM).dwg",
-          "exe": "C:\\Program Files\\Autodesk\\AutoCAD 2023\\acad.exe",
-          "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\125LB_(10LTM).dwg",
-          "enabled": true
-        },
-        {
-          "id": "cad_148lb_(33ltm).dwg",
-          "type": "file",
-          "category": "Bản vẽ CAD",
-          "name": "148LB_(33LTM).dwg",
-          "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\148LB_(33LTM).dwg",
-          "exe": "C:\\Program Files\\Autodesk\\AutoCAD 2023\\acad.exe",
-          "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026\\148LB_(33LTM).dwg",
-          "enabled": true
-        },
-        {
-          "id": "micro_dc74.dgn",
-          "type": "file",
+          "id": "app_micro",
+          "type": "app",
           "category": "MicroStation",
-          "name": "dc74.dgn",
-          "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\LongBinh\\500\\dc74.dgn",
+          "name": "MicroStation V8i",
+          "detail": "C:\\Program Files (x86)\\Bentley\\MicroStation V8i (SELECTseries)\\MicroStation\\ustation.exe",
           "exe": "C:\\Program Files (x86)\\Bentley\\MicroStation V8i (SELECTseries)\\MicroStation\\ustation.exe",
-          "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\LongBinh\\500\\dc74.dgn",
+          "args": [],
           "enabled": true
         },
         {
-          "id": "micro_dc128(13ltm).dgn",
-          "type": "file",
-          "category": "MicroStation",
-          "name": "dc128(13LTM).dgn",
-          "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\LongBinh\\500\\dc128(13LTM).dgn",
-          "exe": "C:\\Program Files (x86)\\Bentley\\MicroStation V8i (SELECTseries)\\MicroStation\\ustation.exe",
-          "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\LongBinh\\500\\dc128(13LTM).dgn",
-          "enabled": true
-        },
-        {
-          "id": "folder_d:\\!!!chuyen trach csdl kh 483\\longbinh\\longbinh\\1000",
+          "id": "folder_d:\\!!!chuyen trach csdl kh 483\\tangnhonphu\\6_tang nhon phu",
           "type": "folder",
           "category": "Thư mục",
-          "name": "1000",
-          "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\LongBinh\\1000",
-          "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\LongBinh\\1000",
+          "name": "6_TANG NHON PHU",
+          "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\6_TANG NHON PHU",
+          "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\6_TANG NHON PHU",
           "enabled": true
         },
         {
-          "id": "folder_d:\\!!!chuyen trach csdl kh 483\\longbinh\\longbinh\\500",
+          "id": "folder_d:\\!!!chuyen trach csdl kh 483\\tangnhonphu\\tangnhophu\\200",
+          "type": "folder",
+          "category": "Thư mục",
+          "name": "200",
+          "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\TangNhoPhu\\200",
+          "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\TangNhoPhu\\200",
+          "enabled": true
+        },
+        {
+          "id": "folder_d:\\!!!chuyen trach csdl kh 483\\tangnhonphu\\tangnhophu\\500",
           "type": "folder",
           "category": "Thư mục",
           "name": "500",
-          "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\LongBinh\\500",
-          "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\LongBinh\\500",
+          "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\TangNhoPhu\\500",
+          "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\TangNhoPhu\\500",
           "enabled": true
         },
         {
-          "id": "folder_d:\\!!!chuyen trach csdl kh 483\\longbinh\\10.long binh-moi 02.01.2026",
+          "id": "folder_d:\\!!!chuyen trach csdl kh 483\\tangnhonphu\\so da ngoai _ quan 9",
           "type": "folder",
           "category": "Thư mục",
-          "name": "10.LONG BINH-moi 02.01.2026",
-          "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026",
-          "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\LONGBINH\\10.LONG BINH-moi 02.01.2026",
+          "name": "SO DA NGOAI _ QUAN 9",
+          "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\SO DA NGOAI _ QUAN 9",
+          "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU\\SO DA NGOAI _ QUAN 9",
           "enabled": true
         },
         {
-          "id": "folder_d:\\!!!chuyen trach csdl kh 483",
+          "id": "folder_d:\\dulieuvpdk",
           "type": "folder",
           "category": "Thư mục",
-          "name": "!!!CHUYEN TRACH CSDL KH 483",
-          "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483",
-          "target": "D:\\!!!CHUYEN TRACH CSDL KH 483",
+          "name": "DuLieuVPDK",
+          "detail": "D:\\DuLieuVPDK",
+          "target": "D:\\DuLieuVPDK",
           "enabled": true
         },
         {
-          "id": "folder_d:\\phanmem\\sessionkeeper",
+          "id": "folder_d:\\!!!chuyen trach csdl kh 483\\tangnhonphu",
           "type": "folder",
           "category": "Thư mục",
-          "name": "SessionKeeper",
-          "detail": "D:\\PhanMem\\SessionKeeper",
-          "target": "D:\\PhanMem\\SessionKeeper",
+          "name": "TANGNHONPHU",
+          "detail": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU",
+          "target": "D:\\!!!CHUYEN TRACH CSDL KH 483\\TANGNHONPHU",
           "enabled": true
         }
       ]
